@@ -1,0 +1,3891 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>台灣賞鳥百大圖鑑｜親子自然賞鳥觀察指南</title>
+
+  <!-- 背景 PWA / iOS 全螢幕獨立 Web App 設定 -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="台灣賞鳥" />
+  <meta name="application-name" content="台灣賞鳥" />
+  <meta name="theme-color" content="#143029" id="themeColorMeta" />
+
+  <!-- 預設 SVG Favicon 備援 -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23143029'/%3E%3Ccircle cx='34' cy='26' r='10' fill='%231b1f24'/%3E%3Cpath d='M24 34c4 10 16 14 24 8-3 8-12 12-22 10-8-2-14-10-12-18z' fill='%232362a2'/%3E%3Cpath d='M42 24l11-2-9 6z' fill='%23e53935'/%3E%3Ccircle cx='37' cy='24' r='2.3' fill='%23fdd835'/%3E%3C/svg%3E" />
+
+  <!-- 動態注入 512x512 / 180x180 台灣藍鵲 App 圖示與 Manifest 掛載點 -->
+  <link id="appleTouchIcon180" rel="apple-touch-icon" sizes="180x180" href="" />
+  <link id="appleTouchIcon512" rel="apple-touch-icon" sizes="512x512" href="" />
+  <link id="faviconPng192" rel="icon" type="image/png" sizes="192x192" href="" />
+  <link id="manifestLink" rel="manifest" href="" />
+
+  <!-- 100% 純原生自包含樣式（唯一 <style> 區塊，不依賴外部 CSS CDN） -->
+  <style>
+    :root {
+      --forest-950: #0c1f1a;
+      --forest-900: #143029;
+      --forest-800: #1c4238;
+      --forest-700: #26574a;
+      --forest-600: #336e5e;
+      --amber-500: #e69f38;
+      --amber-400: #f0b454;
+      --amber-100: #fdf1db;
+      --bg-page: #faf8f2;
+      --bg-card: #ffffff;
+      --bg-sub: #f3efe4;
+      --bg-chip: #efeae0;
+      --border-soft: #e2dccb;
+      --border-strong: #cfc6b0;
+      --text-main: #1E2E29;
+      --text-muted: #566861;
+      --text-soft: #75867f;
+      --text-on-forest: #faf8f2;
+      --text-on-amber: #142721;
+      --emerald-700: #1d6f52;
+      --emerald-100: #dff4ea;
+      --red-600: #c6362f;
+      --red-100: #fdeaea;
+      --shadow-sm: 0 2px 8px rgba(20, 48, 41, 0.07);
+      --shadow-md: 0 8px 24px rgba(20, 48, 41, 0.11);
+      --shadow-lg: 0 18px 42px rgba(12, 31, 26, 0.22);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --media-filter: none;
+    }
+
+    /* 護眼暗色模式變數覆寫 */
+    html.dark-mode,
+    body.dark-mode {
+      --forest-950: #081210;
+      --forest-900: #0e1d19;
+      --forest-800: #152b25;
+      --forest-700: #203d35;
+      --forest-600: #2d5449;
+      --amber-500: #d69335;
+      --amber-400: #e4a84e;
+      --amber-100: #2d2415;
+      --bg-page: #101b18;
+      --bg-card: #162420;
+      --bg-sub: #1c2e29;
+      --bg-chip: #20342e;
+      --border-soft: #274038;
+      --border-strong: #34544a;
+      --text-main: #e9efe9;
+      --text-muted: #a6b9b1;
+      --text-soft: #81968e;
+      --text-on-forest: #eef3ef;
+      --text-on-amber: #11211c;
+      --emerald-700: #41a880;
+      --emerald-100: #18362a;
+      --red-600: #e05a52;
+      --red-100: #381b1a;
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.42);
+      --shadow-lg: 0 18px 46px rgba(0, 0, 0, 0.65);
+      --media-filter: brightness(0.84) contrast(1.03);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Segoe UI", sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    button, input, textarea {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==================== 頂部導覽列 ==================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: linear-gradient(180deg, var(--forest-900) 0%, var(--forest-950) 100%);
+      color: var(--text-on-forest);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+      padding-top: env(safe-area-inset-top);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    .header-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 12px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--forest-800);
+      border: 1.5px solid rgba(230, 159, 56, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .brand-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      line-height: 1.25;
+      color: var(--text-on-forest);
+    }
+
+    .brand-sub {
+      margin: 2px 0 0;
+      font-size: 0.74rem;
+      color: rgba(250, 248, 242, 0.75);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .hdr-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--text-on-forest);
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .hdr-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .hdr-btn:active {
+      transform: scale(0.97);
+    }
+
+    .hdr-btn.active {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+      border-color: var(--amber-400);
+    }
+
+    /* 三大主分頁籤 */
+    .main-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.24);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 9px 6px;
+      border-radius: 11px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(250, 248, 242, 0.82);
+      transition: background 0.2s ease, color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .tab-btn.active {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+    }
+
+    .tab-badge {
+      display: none;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      background: rgba(12, 31, 26, 0.22);
+    }
+
+    @media (min-width: 560px) {
+      .brand-title { font-size: 1.2rem; }
+      .tab-btn { font-size: 0.88rem; padding: 10px 12px; }
+      .tab-badge { display: inline-block; }
+    }
+
+    /* ==================== 主容器 ==================== */
+    .main-container {
+      flex: 1;
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 18px 14px 36px;
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+
+    .section-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* 頂部手冊簡介橫幅 */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--forest-900) 0%, var(--forest-800) 100%);
+      color: var(--text-on-forest);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    @media (min-width: 768px) {
+      .hero-banner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px 24px;
+      }
+    }
+
+    .hero-kicker {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--amber-400);
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .hero-title {
+      margin: 0 0 6px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .hero-desc {
+      margin: 0;
+      font-size: 0.84rem;
+      color: rgba(250, 248, 242, 0.84);
+      max-width: 660px;
+    }
+
+    .hero-notice {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 14px;
+      background: rgba(230, 159, 56, 0.16);
+      border: 1px solid rgba(230, 159, 56, 0.4);
+      color: #fbe1b1;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    /* 搜尋與篩選面板 */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-top {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .filter-top {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .panel-heading {
+      margin: 0;
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .result-count {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-sub);
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .search-row { width: auto; }
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+
+    @media (min-width: 640px) {
+      .search-wrap { width: 280px; }
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-soft);
+      background: var(--bg-page);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .text-input.with-icon {
+      padding-left: 34px;
+    }
+
+    .text-input:focus {
+      border-color: var(--amber-500);
+    }
+
+    .btn-link-reset {
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--forest-700);
+      background: var(--bg-sub);
+      flex-shrink: 0;
+    }
+
+    body.dark-mode .btn-link-reset {
+      color: var(--amber-400);
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .chip {
+      padding: 7px 12px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--bg-chip);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .chip:hover {
+      border-color: var(--amber-500);
+    }
+
+    .chip.active {
+      background: var(--forest-900);
+      color: var(--text-on-forest);
+      border-color: var(--forest-900);
+    }
+
+    body.dark-mode .chip.active {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+      border-color: var(--amber-500);
+    }
+
+    /* ==================== 鳥類卡片網格 ==================== */
+    .bird-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 680px) {
+      .bird-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .bird-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .bird-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    @media (hover: hover) {
+      .bird-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--amber-500);
+      }
+      .bird-card:hover .bird-real-photo {
+        transform: scale(1.03);
+      }
+    }
+
+    /* 圖片區塊與 Shimmer 載入動畫 */
+    .card-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: var(--forest-900);
+      overflow: hidden;
+    }
+
+    .media-slot {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    @keyframes shimmerMove {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .photo-shimmer {
+      background: linear-gradient(90deg, #16362e 25%, #235045 50%, #16362e 75%);
+      background-size: 200% 100%;
+      animation: shimmerMove 1.6s infinite linear;
+    }
+
+    .bird-real-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 22%;
+      display: block;
+      filter: var(--media-filter);
+      transition: opacity 0.4s ease, transform 0.35s ease, filter 0.3s ease;
+    }
+
+    .bird-real-photo.is-loading {
+      opacity: 0;
+    }
+
+    .media-caption-badge {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: rgba(12, 31, 26, 0.72);
+      color: #f4f1e8;
+      font-size: 0.68rem;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .card-num-badge {
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(12, 31, 26, 0.8);
+      color: var(--amber-400);
+      font-size: 0.7rem;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      pointer-events: none;
+    }
+
+    .card-top-badges {
+      position: absolute;
+      top: 9px;
+      right: 9px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 4px;
+      pointer-events: none;
+      max-width: 72%;
+    }
+
+    .pill-tag {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .pill-endemic {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+    }
+
+    .pill-migrant {
+      background: #225e7a;
+      color: #eff8fc;
+    }
+
+    .pill-alien {
+      background: #6c4a38;
+      color: #fdf5ef;
+    }
+
+    .pill-habitat {
+      background: rgba(12, 31, 26, 0.82);
+      color: #faf8f2;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* 卡片內容 */
+    .card-body {
+      padding: 14px 15px 13px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 11px;
+    }
+
+    .card-head-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .bird-name {
+      margin: 0;
+      font-size: 1.16rem;
+      font-weight: 900;
+      color: var(--text-main);
+      line-height: 1.25;
+    }
+
+    .bird-sci {
+      margin: 2px 0 0;
+      font-size: 0.72rem;
+      color: var(--text-soft);
+    }
+
+    .size-pill {
+      flex-shrink: 0;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: var(--bg-sub);
+      border: 1px solid var(--border-soft);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* 真實錄音區 */
+    .audio-box {
+      background: var(--bg-sub);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .audio-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .btn-solid {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: var(--forest-900);
+      color: var(--text-on-forest);
+      font-size: 0.78rem;
+      font-weight: 800;
+      transition: background 0.18s ease, transform 0.12s ease;
+    }
+
+    .btn-solid:hover {
+      background: var(--forest-700);
+    }
+
+    .btn-solid.is-open {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+    }
+
+    .btn-amber {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+      font-size: 0.82rem;
+      font-weight: 800;
+      transition: background 0.18s ease;
+    }
+
+    .btn-amber:hover {
+      background: var(--amber-400);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 11px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-strong);
+      font-size: 0.76rem;
+      font-weight: 700;
+      transition: background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--amber-500);
+      background: var(--bg-page);
+    }
+
+    .btn-yt-red {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: #c62828;
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .btn-yt-red:hover {
+      background: #a81f1f;
+    }
+
+    .flex-1 { flex: 1; }
+
+    .call-text {
+      margin: 0;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.45;
+    }
+
+    /* YouTube 展開容器 */
+    @keyframes expandFade {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .yt-inline-wrap {
+      animation: expandFade 0.24s ease-out;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 4px;
+    }
+
+    .yt-frame-box {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 11px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .yt-embed-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      filter: var(--media-filter);
+    }
+
+    .yt-inline-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .card-desc {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .card-desc p {
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-desc strong {
+      color: var(--text-main);
+    }
+
+    .card-footer {
+      padding-top: 10px;
+      border-top: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .mini-log-btns {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-log-btn {
+      padding: 5px 9px;
+      border-radius: 9px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--bg-page);
+      color: var(--text-muted);
+      border: 1px solid var(--border-soft);
+      transition: all 0.15s ease;
+    }
+
+    .mini-log-btn.active-seen {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+      border-color: var(--amber-500);
+    }
+
+    .mini-log-btn.active-heard {
+      background: var(--emerald-700);
+      color: #ffffff;
+      border-color: var(--emerald-700);
+    }
+
+    .detail-link-btn {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--forest-700);
+      padding: 5px 8px;
+      border-radius: 8px;
+    }
+
+    body.dark-mode .detail-link-btn {
+      color: var(--amber-400);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 42px 20px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      border: 1px dashed var(--border-strong);
+      color: var(--text-muted);
+    }
+
+    /* ==================== 分頁二：賞鳥挑戰 ==================== */
+    .quiz-shell {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .quiz-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .quiz-stats {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stat-box {
+      background: var(--bg-sub);
+      border: 1px solid var(--border-soft);
+      border-radius: 13px;
+      padding: 7px 12px;
+      text-align: center;
+      min-width: 74px;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .stat-val {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      background: var(--bg-sub);
+      border: 1px solid var(--border-soft);
+      padding: 5px;
+      border-radius: 15px;
+    }
+
+    @media (min-width: 540px) {
+      .mode-switch { grid-template-columns: 1fr 1fr; }
+    }
+
+    .mode-btn {
+      padding: 10px 12px;
+      border-radius: 11px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.active {
+      background: var(--forest-900);
+      color: var(--text-on-forest);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+    }
+
+    body.dark-mode .mode-btn.active {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+    }
+
+    /* 題庫來源切換與提示橫幅 */
+    .pool-switch {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      background: var(--bg-page);
+      border: 1.5px solid var(--border-soft);
+      padding: 5px;
+      border-radius: 15px;
+    }
+
+    @media (min-width: 540px) {
+      .pool-switch { grid-template-columns: 1fr 1fr; }
+    }
+
+    .pool-btn {
+      padding: 9px 12px;
+      border-radius: 11px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .pool-btn.active {
+      background: var(--amber-500);
+      color: var(--text-on-amber);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .pool-notice {
+      background: var(--amber-100);
+      border: 1px solid var(--amber-500);
+      color: var(--text-main);
+      border-radius: 13px;
+      padding: 10px 13px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    /* 尚未標記看過的鳥：友善引導空狀態 */
+    .empty-quiz-box {
+      background: linear-gradient(155deg, var(--forest-900) 0%, var(--forest-800) 100%);
+      color: var(--text-on-forest);
+      border-radius: 20px;
+      padding: 26px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .empty-quiz-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      width: 100%;
+      max-width: 380px;
+      margin-top: 6px;
+    }
+
+    /* 野外觀察線索卡（看特徵猜鳥名 & 看照片辨識） */
+    .mystery-stage {
+      background: linear-gradient(160deg, #0f241e 0%, #16362e 100%);
+      color: #faf8f2;
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .stage-top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stage-badge {
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: rgba(230, 159, 56, 0.2);
+      border: 1px solid rgba(230, 159, 56, 0.45);
+      color: #f7c774;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .stage-hint-btn {
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #faf8f2;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .clue-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .clue-meta-pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #faf8f2;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .clue-block {
+      background: rgba(8, 20, 16, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 13px 15px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .clue-block-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #f0b454;
+      letter-spacing: 0.03em;
+    }
+
+    .clue-block-text {
+      margin: 0;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #faf8f2;
+    }
+
+    .personal-record-banner {
+      background: var(--bg-card);
+      border: 1px dashed var(--amber-500);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 0.78rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .quiz-photo-frame {
+      width: 100%;
+      max-width: 460px;
+      aspect-ratio: 16 / 10;
+      margin: 0 auto;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #091511;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      position: relative;
+    }
+
+    .hint-box {
+      text-align: left;
+      background: rgba(8, 18, 15, 0.72);
+      border: 1px solid rgba(230, 159, 56, 0.4);
+      color: #f9d18b;
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 560px) {
+      .quiz-options { grid-template-columns: 1fr 1fr; }
+    }
+
+    .quiz-opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: var(--bg-page);
+      border: 2px solid var(--border-soft);
+      text-align: left;
+      transition: all 0.18s ease;
+    }
+
+    .quiz-opt-btn:hover:not(:disabled) {
+      border-color: var(--amber-500);
+      background: var(--bg-sub);
+    }
+
+    .quiz-opt-btn.is-correct {
+      border-color: var(--emerald-700);
+      background: var(--emerald-100);
+    }
+
+    .quiz-opt-btn.is-wrong {
+      border-color: var(--red-600);
+      background: var(--red-100);
+    }
+
+    .quiz-opt-btn.is-dim {
+      opacity: 0.48;
+    }
+
+    .opt-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: var(--forest-900);
+      color: var(--amber-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .quiz-feedback {
+      border-radius: 16px;
+      padding: 16px;
+      border: 1.5px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    @media (min-width: 560px) {
+      .quiz-feedback { flex-direction: row; align-items: flex-start; }
+    }
+
+    .quiz-feedback.ok {
+      background: var(--emerald-100);
+      border-color: var(--emerald-700);
+    }
+
+    .quiz-feedback.miss {
+      background: var(--amber-100);
+      border-color: var(--amber-500);
+    }
+
+    .reveal-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 13px;
+      overflow: hidden;
+      background: var(--forest-900);
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 560px) {
+      .reveal-thumb { width: 150px; aspect-ratio: 1 / 1; }
+    }
+
+    /* ==================== 分頁三：觀察紀錄簿 ==================== */
+    .progress-track {
+      width: 100%;
+      height: 11px;
+      border-radius: 999px;
+      background: var(--bg-sub);
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--forest-700) 0%, var(--amber-500) 100%);
+      transition: width 0.45s ease;
+    }
+
+    .habitat-progress-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    @media (min-width: 580px) {
+      .habitat-progress-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 960px) {
+      .habitat-progress-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .hab-stat-card {
+      background: var(--bg-sub);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .log-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 760px) {
+      .log-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .log-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .log-card.is-collected {
+      border-color: var(--amber-500);
+    }
+
+    .log-card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .log-thumb {
+      width: 68px;
+      height: 68px;
+      border-radius: 13px;
+      overflow: hidden;
+      background: var(--forest-900);
+      flex-shrink: 0;
+    }
+
+    .log-thumb.dimmed {
+      opacity: 0.65;
+      filter: grayscale(45%);
+    }
+
+    .log-editor {
+      border-top: 1px solid var(--border-soft);
+      padding-top: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .log-editor-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    @media (min-width: 500px) {
+      .log-editor-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .field-label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .btn-danger-soft {
+      padding: 7px 11px;
+      border-radius: 10px;
+      background: var(--red-100);
+      color: var(--red-600);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .btn-danger-solid {
+      padding: 7px 11px;
+      border-radius: 10px;
+      background: var(--red-600);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    /* ==================== 頁尾 ==================== */
+    .site-footer {
+      background: var(--forest-950);
+      color: var(--text-on-forest);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 22px 14px calc(22px + env(safe-area-inset-bottom));
+      margin-top: 24px;
+    }
+
+    .footer-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .footer-tips {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 720px) {
+      .footer-tips { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .footer-tip-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.76rem;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .footer-tip-card strong {
+      display: block;
+      color: var(--amber-400);
+      margin-bottom: 2px;
+    }
+
+    .footer-credit {
+      margin: 0;
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(250, 248, 242, 0.56);
+    }
+
+    /* ==================== 彈窗與大圖 Lightbox ==================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(8, 18, 15, 0.78);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(14px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    }
+
+    .modal-panel {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      max-height: 88vh;
+      overflow-y: auto;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      padding: 20px;
+    }
+
+    .modal-close-btn {
+      position: sticky;
+      top: 0;
+      float: right;
+      z-index: 10;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: var(--bg-sub);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-hero-photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      max-height: 320px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--forest-900);
+      cursor: zoom-in;
+    }
+
+    .zoom-hint-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: rgba(12, 31, 26, 0.78);
+      color: #faf8f2;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .detail-info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 560px) {
+      .detail-info-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .info-subcard {
+      background: var(--bg-page);
+      border: 1px solid var(--border-soft);
+      border-radius: 15px;
+      padding: 13px 14px;
+      font-size: 0.84rem;
+    }
+
+    .info-subcard h4 {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
+    .info-subcard p {
+      margin: 0;
+      color: var(--text-muted);
+    }
+
+    /* 全螢幕大圖 Lightbox */
+    .lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 65;
+      background: rgba(6, 14, 12, 0.94);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: max(18px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: max(14px, env(safe-area-inset-top));
+      right: max(14px, env(safe-area-inset-right));
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 76vh;
+      border-radius: 16px;
+      object-fit: contain;
+      filter: var(--media-filter);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+    }
+
+    /* Toast 提示 */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 75;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: var(--forest-950);
+      color: #faf8f2;
+      border: 1px solid var(--amber-500);
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 極簡頂部導覽列（僅標題 + 賞鳥禮儀 + 護眼暗色） -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-icon">
+            <img id="header-icon-img" src="" alt="台灣賞鳥圖示" class="hidden" />
+            <span id="header-icon-fallback" style="font-size:1.35rem;">🐦</span>
+          </div>
+          <div>
+            <h1 class="brand-title">台灣賞鳥百大圖鑑</h1>
+            <p class="brand-sub">親子自然賞鳥觀察指南</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="btn-ethics" type="button" class="hdr-btn">
+            <span>🌿</span><span>賞鳥禮儀</span>
+          </button>
+          <button id="btn-dark-mode" type="button" class="hdr-btn" aria-pressed="false">
+            <span id="dark-icon">🌙</span><span id="dark-label">護眼暗色</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 三大主分頁 -->
+      <nav class="main-tabs" role="tablist">
+        <button id="tab-guide" type="button" role="tab" aria-selected="true" data-tab="guide" class="tab-btn active">
+          <span>🔍</span><span>圖鑑探索</span>
+        </button>
+        <button id="tab-quiz" type="button" role="tab" aria-selected="false" data-tab="quiz" class="tab-btn">
+          <span>🎯</span><span>賞鳥挑戰</span>
+        </button>
+        <button id="tab-log" type="button" role="tab" aria-selected="false" data-tab="log" class="tab-btn">
+          <span>📒</span><span>觀察紀錄簿</span>
+          <span id="log-count-badge" class="tab-badge">0/100</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 主要內容區 -->
+  <main class="main-container">
+
+    <!-- ==================== 分頁一：🔍 圖鑑探索 ==================== -->
+    <section id="view-guide" class="section-stack">
+      <div class="hero-banner">
+        <div>
+          <div class="hero-kicker">🦜 完整收錄 100 種台灣野鳥 · 真實生態照與野外錄音</div>
+          <h2 class="hero-title">從都市公園、田野濕地到高山森林，帶孩子認識百大台灣野鳥！</h2>
+          <p class="hero-desc">
+            內建 12 種代表野鳥台灣野外 YouTube 實錄，其餘 88 種全面串接 YouTube 真實鳥音與 Xeno-canto 國際鳥音庫；點擊任意卡片可開啟完整圖鑑與全螢幕大圖檢視。
+          </p>
+        </div>
+        <div class="hero-notice">
+          <span style="font-size:1.35rem;">🔇</span>
+          <span>賞鳥請保持安靜與距離，<br /><strong>切勿在野外播音誘鳥喔！</strong></span>
+        </div>
+      </div>
+
+      <!-- 搜尋列與 8 大分類篩選 -->
+      <div class="panel">
+        <div class="filter-top">
+          <h3 class="panel-heading">
+            <span>🔎</span> 棲地與特徵篩選
+            <span id="guide-result-count" class="result-count">顯示 100 / 100 種</span>
+          </h3>
+          <div class="search-row">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input id="search-input" type="search" class="text-input with-icon"
+                placeholder="搜尋編號、鳥名、英文、特徵、口訣..." aria-label="搜尋台灣野鳥" />
+            </div>
+            <button id="btn-reset-filters" type="button" class="btn-link-reset">重設</button>
+          </div>
+        </div>
+
+        <div id="filter-chips" class="chip-group">
+          <button type="button" data-filter="all" class="chip active">全部 (100)</button>
+          <button type="button" data-filter="urban" class="chip">🏙️ 都市與郊區 (20)</button>
+          <button type="button" data-filter="field" class="chip">🌾 田野與草地 (14)</button>
+          <button type="button" data-filter="wetland" class="chip">🌊 水域與濕地 (30)</button>
+          <button type="button" data-filter="forest" class="chip">🌲 山區與森林 (36)</button>
+          <button type="button" data-filter="endemic" class="chip">🌟 台灣特有種</button>
+          <button type="button" data-filter="migrant" class="chip">❄️ 冬候鳥／過境</button>
+          <button id="chip-filter-seen" type="button" data-filter="seen" class="chip">👀 已看過 (0)</button>
+        </div>
+      </div>
+
+      <!-- 百大鳥類卡片網格 -->
+      <div id="bird-grid" class="bird-grid"></div>
+
+      <!-- 無結果空狀態 -->
+      <div id="empty-state" class="empty-state hidden">
+        <div style="font-size:2.2rem; margin-bottom:6px;">🦜❓</div>
+        <strong>目前篩選條件沒有符合的野鳥喔！</strong>
+        <p style="margin:6px 0 0; font-size:0.82rem;">請嘗試清除關鍵字或切換其他棲地分類。</p>
+      </div>
+    </section>
+
+    <!-- ==================== 分頁二：🎯 賞鳥挑戰（已看過的鳥類特徵識別） ==================== -->
+    <section id="view-quiz" class="quiz-shell hidden">
+      <div class="quiz-card">
+        <div class="quiz-header">
+          <div>
+            <span class="pill-tag pill-endemic" style="display:inline-block; margin-bottom:5px;">親子觀察複習</span>
+            <h2 style="margin:0; font-size:1.3rem; font-weight:900;">🎯 賞鳥特徵識別挑戰</h2>
+            <p style="margin:3px 0 0; font-size:0.82rem; color:var(--text-muted);">
+              從你們親眼看過的野鳥出題，靠羽色特徵、棲地習性或生態照猜猜牠是誰！
+            </p>
+          </div>
+          <div class="quiz-stats">
+            <div class="stat-box">
+              <div class="stat-label">本輪連勝</div>
+              <div id="quiz-streak" class="stat-val" style="color:var(--amber-500);">0 🔥</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">答對 / 作答</div>
+              <div id="quiz-accuracy" class="stat-val" style="color:var(--emerald-700);">0 / 0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">最高連勝</div>
+              <div id="quiz-best" class="stat-val">0 🏆</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 題庫來源切換（預設：👀 已看過的野鳥） -->
+        <div class="pool-switch">
+          <button id="btn-pool-seen" type="button" class="pool-btn active">
+            <span>👀</span><span id="pool-seen-label">已看過的野鳥 (0 種)</span>
+          </button>
+          <button id="btn-pool-all" type="button" class="pool-btn">
+            <span>📚</span><span>全圖鑑練習 (100 種)</span>
+          </button>
+        </div>
+
+        <!-- 全圖鑑練習棲地範圍（僅 pool === 'all' 時顯示） -->
+        <div id="quiz-scope-bar" class="hidden" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px;">
+          <span style="font-size:0.78rem; font-weight:800; color:var(--text-muted);">🎯 選擇出題棲地：</span>
+          <div id="quiz-scope-chips" class="chip-group">
+            <button type="button" data-scope="all" class="chip active">全部 100 種</button>
+            <button type="button" data-scope="urban" class="chip">🏙️ 都市與郊區</button>
+            <button type="button" data-scope="field" class="chip">🌾 田野與草地</button>
+            <button type="button" data-scope="wetland" class="chip">🌊 水域與濕地</button>
+            <button type="button" data-scope="forest" class="chip">🌲 山區與森林</button>
+          </div>
+        </div>
+
+        <!-- 尚未標記看過任何鳥時的友善引導卡片 -->
+        <div id="quiz-empty-seen" class="empty-quiz-box hidden">
+          <div style="font-size:2.4rem; line-height:1;">🔭🐦</div>
+          <h3 style="margin:0; font-size:1.15rem; font-weight:900;">還沒標記任何「已看過的野鳥」喔！</h3>
+          <p style="margin:0; font-size:0.84rem; color:rgba(250,248,242,0.82); max-width:440px;">
+            先勾選你們在公園、校園或郊外看過的鳥，就能用專屬的觀察清單來玩特徵識別挑戰！
+          </p>
+          <div class="empty-quiz-actions">
+            <button id="btn-seed-urban" type="button" class="btn-amber" style="width:100%; padding:11px 14px;">
+              ✨ 一鍵勾選 6 種市區常見鳥馬上開玩
+            </button>
+            <button id="btn-go-log" type="button" class="btn-outline" style="width:100%; padding:10px 14px; background:rgba(255,255,255,0.12); color:#faf8f2; border-color:rgba(255,255,255,0.28);">
+              📒 前往紀錄簿勾選看過的鳥
+            </button>
+            <button id="btn-switch-all-pool" type="button" class="btn-outline" style="width:100%; padding:10px 14px; background:transparent; color:#f7c774; border-color:rgba(230,159,56,0.5);">
+              📚 切換至全圖鑑練習模式
+            </button>
+          </div>
+        </div>
+
+        <!-- 正式測驗互動區 -->
+        <div id="quiz-active-area" style="display:flex; flex-direction:column; gap:14px;">
+          <!-- 題型切換（預設：📝 看特徵猜鳥名） -->
+          <div class="mode-switch">
+            <button id="btn-mode-feature" type="button" class="mode-btn active">
+              <span>📝</span><span>看特徵猜鳥名</span>
+            </button>
+            <button id="btn-mode-photo" type="button" class="mode-btn">
+              <span>📷</span><span>看照片辨識鳥種</span>
+            </button>
+          </div>
+
+          <!-- 當已看過 1~3 種時的溫馨補足提示 -->
+          <div id="quiz-few-seen-notice" class="pool-notice hidden"></div>
+
+          <!-- 模式 A：📝 看特徵猜鳥名（野外觀察線索卡） -->
+          <div id="quiz-feature-zone" class="mystery-stage">
+            <div class="stage-top-bar">
+              <span class="stage-badge">📝 野外觀察線索卡</span>
+              <button id="btn-quiz-hint-feature" type="button" class="stage-hint-btn">💡 叫聲口訣提示</button>
+            </div>
+
+            <div id="quiz-clue-meta" class="clue-meta-row"></div>
+
+            <div class="clue-block">
+              <span class="clue-block-title">🪶 外觀與羽色特徵</span>
+              <p id="quiz-clue-features" class="clue-block-text"></p>
+            </div>
+
+            <div class="clue-block">
+              <span class="clue-block-title">🌿 棲地與行為線索</span>
+              <p id="quiz-clue-habitat" class="clue-block-text"></p>
+            </div>
+
+            <div id="quiz-hint-text-feature" class="hint-box hidden"></div>
+          </div>
+
+          <!-- 模式 B：📷 看照片辨識鳥種 -->
+          <div id="quiz-photo-zone" class="mystery-stage hidden" style="text-align:center;">
+            <div class="stage-top-bar">
+              <span id="quiz-photo-badge" class="stage-badge">📷 猜猜這是哪種台灣野鳥？</span>
+              <button id="btn-quiz-hint-photo" type="button" class="stage-hint-btn">💡 查看外觀特徵提示</button>
+            </div>
+
+            <div id="quiz-photo-stage" class="quiz-photo-frame"></div>
+
+            <p style="margin:0; font-size:0.78rem; color:rgba(250,248,242,0.78);">
+              仔細觀察羽色、嘴型與姿態，從下方四個選項選出正確鳥種！
+            </p>
+
+            <div id="quiz-hint-text-photo" class="hint-box hidden"></div>
+          </div>
+
+          <!-- 四選一選項區 -->
+          <div id="quiz-options" class="quiz-options"></div>
+
+          <!-- 答題回饋與生態照／個人觀察紀錄揭曉區 -->
+          <div id="quiz-feedback" class="quiz-feedback hidden">
+            <div id="quiz-reveal-photo" class="reveal-thumb" style="cursor:zoom-in;"></div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+              <h3 id="quiz-feedback-title" style="margin:0; font-size:1.05rem; font-weight:900;"></h3>
+              <p id="quiz-feedback-desc" style="margin:0; font-size:0.84rem; line-height:1.55;"></p>
+              <div id="quiz-personal-record" class="personal-record-banner hidden"></div>
+              <div style="padding-top:4px; display:flex; flex-wrap:wrap; gap:8px;">
+                <button id="btn-quiz-next" type="button" class="btn-solid">下一題 ➡️</button>
+                <button id="btn-quiz-open-detail" type="button" class="btn-outline">📖 查看完整圖鑑</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 分頁三：📒 賞鳥觀察紀錄簿 ==================== -->
+    <section id="view-log" class="section-stack hidden">
+      <div class="panel">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;">
+          <div>
+            <span class="pill-tag pill-endemic" style="display:inline-block; margin-bottom:5px;">本機自動儲存 · 連動賞鳥挑戰</span>
+            <h2 style="margin:0; font-size:1.3rem; font-weight:900;">📒 賞鳥觀察紀錄簿</h2>
+            <p style="margin:3px 0 0; font-size:0.82rem; color:var(--text-muted);">
+              勾選「已看過」會立即加入賞鳥特徵挑戰題庫，一起累積百大賞鳥成就！
+            </p>
+          </div>
+          <div class="quiz-stats">
+            <div class="stat-box">
+              <div class="stat-label">👀 已親眼看過</div>
+              <div id="stat-seen" class="stat-val" style="color:var(--amber-500);">0 / 100</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">👂 曾聽過叫聲</div>
+              <div id="stat-heard" class="stat-val" style="color:var(--emerald-700);">0 / 100</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 總探索進度條（以已看過為準） -->
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; font-size:0.8rem; font-weight:800; margin-bottom:6px;">
+          <span>總探索進度（已親眼看過）</span>
+          <span id="stat-total-text">已看過 0 / 100 (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div id="stat-total-bar" class="progress-fill" style="width:0%;"></div>
+        </div>
+
+        <!-- 四大棲地個別進度條 -->
+        <div id="habitat-progress-grid" class="habitat-progress-grid"></div>
+
+        <!-- 清除所有紀錄（行內雙重確認，絕不使用 window.confirm） -->
+        <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border-soft); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;">
+          <span style="font-size:0.75rem; color:var(--text-muted);">所有觀察紀錄皆自動儲存於本機瀏覽器中。</span>
+          <div id="clear-all-wrap" style="display:flex; align-items:center; gap:6px;">
+            <button id="btn-clear-all-req" type="button" class="btn-danger-soft">🗑️ 清除所有紀錄</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 紀錄簿篩選列 -->
+      <div class="panel">
+        <div class="filter-top" style="margin-bottom:10px;">
+          <div id="log-habitat-chips" class="chip-group">
+            <button type="button" data-loghab="all" class="chip active">全部棲地</button>
+            <button type="button" data-loghab="urban" class="chip">🏙️ 都市與郊區</button>
+            <button type="button" data-loghab="field" class="chip">🌾 田野與草地</button>
+            <button type="button" data-loghab="wetland" class="chip">🌊 水域與濕地</button>
+            <button type="button" data-loghab="forest" class="chip">🌲 山區與森林</button>
+          </div>
+          <div class="search-wrap" style="max-width:260px;">
+            <span class="search-icon">🔍</span>
+            <input id="log-search-input" type="search" class="text-input with-icon" placeholder="搜尋鳥名或地點筆記..." />
+          </div>
+        </div>
+        <div id="log-status-chips" class="chip-group">
+          <button type="button" data-logstatus="all" class="chip active">全部</button>
+          <button type="button" data-logstatus="seen" class="chip">✅ 已看過</button>
+          <button type="button" data-logstatus="unseen" class="chip">⬜ 尚未看過</button>
+        </div>
+      </div>
+
+      <!-- 紀錄卡片列表 -->
+      <div id="log-list" class="log-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- 頁尾 -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-tips">
+        <div class="footer-tip-card">
+          <span style="font-size:1.25rem;">🔭</span>
+          <div>
+            <strong>保持距離，靜靜欣賞</strong>
+            使用雙筒望遠鏡拉近視線，不靠近鳥巢與幼鳥，讓野鳥自在覓食與休息。
+          </div>
+        </div>
+        <div class="footer-tip-card">
+          <span style="font-size:1.25rem;">🔇</span>
+          <div>
+            <strong>野外絕不播音誘鳥</strong>
+            本頁真實野外錄音僅供行前認識學習，野外播音會嚴重干擾求偶與育雛。
+          </div>
+        </div>
+        <div class="footer-tip-card">
+          <span style="font-size:1.25rem;">🌱</span>
+          <div>
+            <strong>不餵食、不留垃圾</strong>
+            人類食物會傷害野鳥健康，帶走所有垃圾，一起守護台灣珍貴的鳥類棲地。
+          </div>
+        </div>
+      </div>
+      <p class="footer-credit">
+        台灣賞鳥百大圖鑑｜生態照片來源：Wikipedia / Wikimedia Commons · 真實鳥音來源：YouTube &amp; Xeno-canto
+      </p>
+    </div>
+  </footer>
+
+  <!-- ==================== 鳥類詳情 Modal ==================== -->
+  <div id="detail-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-panel">
+      <button id="btn-close-detail" type="button" class="modal-close-btn" aria-label="關閉詳情">✕</button>
+      <div id="detail-content" style="display:flex; flex-direction:column; gap:16px;"></div>
+    </div>
+  </div>
+
+  <!-- ==================== 全螢幕大圖 Lightbox ==================== -->
+  <div id="lightbox-modal" class="lightbox-backdrop hidden" role="dialog" aria-modal="true">
+    <button id="btn-close-lightbox" type="button" class="lightbox-close" aria-label="關閉大圖">✕</button>
+    <img id="lightbox-img" src="" alt="" class="lightbox-img" />
+    <div style="text-align:center; margin-top:12px; color:#faf8f2;">
+      <div id="lightbox-title" style="font-size:1rem; font-weight:800;"></div>
+      <div id="lightbox-credit" style="font-size:0.75rem; color:rgba(250,248,242,0.7); margin-top:3px;"></div>
+    </div>
+  </div>
+
+  <!-- ==================== 🌿 賞鳥禮儀彈窗 ==================== -->
+  <div id="ethics-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-panel" style="max-width:540px; display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-soft); padding-bottom:10px;">
+        <h2 style="margin:0; font-size:1.18rem; font-weight:900;">🌿 親子賞鳥禮儀與望遠鏡口訣</h2>
+        <button id="btn-close-ethics" type="button" class="modal-close-btn" style="position:static; float:none;">✕</button>
+      </div>
+
+      <div class="info-subcard">
+        <h4>🚫 賞鳥五不原則</h4>
+        <ul style="margin:6px 0 0; padding-left:18px; color:var(--text-muted); display:flex; flex-direction:column; gap:6px;">
+          <li><strong>不驚嚇</strong>：放低音量、放慢腳步，不追逐或揮手驚動野鳥。</li>
+          <li><strong>不誘拍播音</strong>：絕不在野外播放鳥音吸引鳥類靠近，以免干擾領域與繁殖。</li>
+          <li><strong>不破壞棲地</strong>：走在既有步道上，不折斷樹枝或踩踏草澤濕地。</li>
+          <li><strong>不餵食</strong>：不丟擲麵包、餅乾或飼料，維持野鳥自然覓食能力。</li>
+          <li><strong>不干擾育雛</strong>：發現鳥巢或雛鳥請立刻遠離，不長時間停留圍觀。</li>
+        </ul>
+      </div>
+
+      <div class="info-subcard" style="background:var(--amber-100); border-color:var(--amber-500);">
+        <h4>🔭 親子雙筒望遠鏡四步小口訣</h4>
+        <ol style="margin:6px 0 0; padding-left:18px; color:var(--text-main); display:flex; flex-direction:column; gap:5px;">
+          <li><strong>先用肉眼找目標</strong>：先看到鳥停在哪根樹枝或電線上，眼睛盯住不要移開。</li>
+          <li><strong>平舉鏡筒對眼前</strong>：保持視線鎖定小鳥，再把望遠鏡平舉到雙眼位置。</li>
+          <li><strong>調寬度合成一圓</strong>：輕輕左右彎折鏡身，讓兩個畫面重疊成一個清楚的圓。</li>
+          <li><strong>轉動中央調焦輪</strong>：用食指慢慢轉動中間滾輪，直到羽毛細節清晰銳利！</li>
+        </ol>
+      </div>
+
+      <button id="btn-ok-ethics" type="button" class="btn-solid" style="width:100%; padding:11px;">
+        我明白了，出發去當小小賞鳥守護員！
+      </button>
+    </div>
+  </div>
+
+  <!-- 輕量提示 Toast -->
+  <div id="toast" class="toast">已儲存</div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =========================================================
+         0. 基礎工具函式
+         ========================================================= */
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function safeBind(id, eventName, handler) {
+        const el = byId(id);
+        if (el) el.addEventListener(eventName, handler);
+      }
+
+      function escapeHtml(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function buildYouTubeEmbedUrl(videoId, isBlindQuiz) {
+        const fsVal = isBlindQuiz ? 0 : 1;
+        let originParam = '';
+        try {
+          if (window.location && window.location.origin && /^https?:\/\//.test(window.location.origin)) {
+            originParam = '&origin=' + encodeURIComponent(window.location.origin);
+          }
+        } catch (e) {}
+        return 'https://www.youtube.com/embed/' + encodeURIComponent(videoId) + '?rel=0&modestbranding=1&playsinline=1&fs=' + fsVal + originParam;
+      }
+
+      function buildYouTubeSearchUrl(bird) {
+        return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(bird.name + ' 叫聲 台灣 野外');
+      }
+
+      function buildXenoCantoUrl(bird) {
+        return 'https://xeno-canto.org/explore?query=' + encodeURIComponent(bird.sci);
+      }
+
+      let toastTimer = null;
+      function showToast(msg) {
+        const el = byId('toast');
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          el.classList.remove('show');
+        }, 2100);
+      }
+
+      /* =========================================================
+         1. 背景靜默 PWA 與 512x512 台灣藍鵲 App 圖示產生器
+         ========================================================= */
+      function drawBlueMagpieIcon(size) {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return '';
+
+        const s = size / 512;
+        ctx.save();
+        ctx.scale(s, s);
+
+        // 深森青綠夜空背景
+        const bg = ctx.createRadialGradient(256, 200, 35, 256, 256, 360);
+        bg.addColorStop(0, '#225245');
+        bg.addColorStop(0.55, '#143029');
+        bg.addColorStop(1, '#0a1915');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, 512, 512);
+
+        // 暖琥珀金微光圓環
+        ctx.beginPath();
+        ctx.arc(365, 130, 54, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(230, 159, 56, 0.22)';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(365, 130, 32, 0, Math.PI * 2);
+        ctx.fillStyle = '#f0b454';
+        ctx.fill();
+
+        // 樹枝
+        ctx.beginPath();
+        ctx.moveTo(45, 395);
+        ctx.quadraticCurveTo(256, 360, 468, 412);
+        ctx.strokeStyle = '#4e3726';
+        ctx.lineWidth = 22;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // 台灣藍鵲優雅長尾羽（寶藍 + 黑白末梢）
+        ctx.beginPath();
+        ctx.moveTo(222, 316);
+        ctx.quadraticCurveTo(135, 385, 76, 466);
+        ctx.strokeStyle = '#1f64b4';
+        ctx.lineWidth = 28;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(116, 424);
+        ctx.lineTo(76, 466);
+        ctx.strokeStyle = '#f8f6f0';
+        ctx.lineWidth = 24;
+        ctx.stroke();
+
+        // 寶藍色身體與雙翼
+        const bodyGrad = ctx.createLinearGradient(190, 210, 330, 365);
+        bodyGrad.addColorStop(0, '#2b7cd3');
+        bodyGrad.addColorStop(1, '#16457d');
+        ctx.beginPath();
+        ctx.ellipse(258, 294, 88, 66, -0.35, 0, Math.PI * 2);
+        ctx.fillStyle = bodyGrad;
+        ctx.fill();
+
+        // 烏黑頭頸部
+        ctx.beginPath();
+        ctx.arc(312, 206, 54, 0, Math.PI * 2);
+        ctx.fillStyle = '#15191d';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(265, 224);
+        ctx.lineTo(352, 236);
+        ctx.lineTo(304, 296);
+        ctx.closePath();
+        ctx.fillStyle = '#15191d';
+        ctx.fill();
+
+        // 鮮紅嘴喙
+        ctx.beginPath();
+        ctx.moveTo(354, 192);
+        ctx.lineTo(426, 204);
+        ctx.lineTo(352, 224);
+        ctx.closePath();
+        ctx.fillStyle = '#e53935';
+        ctx.fill();
+
+        // 金黃眼睛
+        ctx.beginPath();
+        ctx.arc(328, 198, 14, 0, Math.PI * 2);
+        ctx.fillStyle = '#fdd835';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(331, 198, 7, 0, Math.PI * 2);
+        ctx.fillStyle = '#111111';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(328, 194, 2.8, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        // 鮮紅腳爪
+        ctx.strokeStyle = '#e53935';
+        ctx.lineWidth = 10;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(260, 344);
+        ctx.lineTo(252, 384);
+        ctx.moveTo(292, 340);
+        ctx.lineTo(288, 382);
+        ctx.stroke();
+
+        ctx.restore();
+        return canvas.toDataURL('image/png');
+      }
+
+      function initSilentPwaAssets() {
+        try {
+          const icon512 = drawBlueMagpieIcon(512);
+          const icon180 = drawBlueMagpieIcon(180);
+          if (!icon512 || !icon180) return;
+
+          const a180 = byId('appleTouchIcon180');
+          const a512 = byId('appleTouchIcon512');
+          const f192 = byId('faviconPng192');
+          if (a180) a180.href = icon180;
+          if (a512) a512.href = icon512;
+          if (f192) f192.href = icon180;
+
+          const hdrImg = byId('header-icon-img');
+          const hdrFb = byId('header-icon-fallback');
+          if (hdrImg) {
+            hdrImg.src = icon180;
+            hdrImg.classList.remove('hidden');
+            if (hdrFb) hdrFb.classList.add('hidden');
+          }
+
+          const startUrl = window.location.href.startsWith('http')
+            ? window.location.href.split('#')[0]
+            : './';
+
+          const manifestObj = {
+            name: '台灣賞鳥百大圖鑑',
+            short_name: '台灣賞鳥',
+            description: '完整收錄 100 種台灣野鳥：真實生態照片、野外錄音、防爆雷盲聽與看圖辨識挑戰、四大棲地觀察紀錄簿',
+            display: 'standalone',
+            orientation: 'portrait',
+            background_color: '#143029',
+            theme_color: '#143029',
+            start_url: startUrl,
+            icons: [
+              { src: icon180, sizes: '180x180', type: 'image/png', purpose: 'any' },
+              { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+            ]
+          };
+
+          const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+          const manifestLink = byId('manifestLink');
+          if (manifestLink) manifestLink.href = URL.createObjectURL(blob);
+        } catch (err) {
+          console.warn('背景 PWA 圖示初始化略過:', err);
+        }
+      }
+
+      /* =========================================================
+         2. 100 種台灣野鳥完整資料與 12 組已驗證台灣野外 YouTube ID
+         ========================================================= */
+      const HABITAT_META = {
+        urban:   { label: '🏙️ 都市與郊區', short: '都市與郊區', total: 20 },
+        field:   { label: '🌾 田野與草地', short: '田野與草地', total: 14 },
+        wetland: { label: '🌊 水域與濕地', short: '水域與濕地', total: 30 },
+        forest:  { label: '🌲 山區與森林', short: '山區與森林', total: 36 }
+      };
+
+      const VERIFIED_YT_MAP = {
+        1:  { primary: 'p92OKfP9oQk', backup: 'kNCXSsDQmh0' },
+        2:  { primary: 'XvwF3TYk83I', backup: 'B8-2EKrNwzo' },
+        3:  { primary: 'OIk0HtbzK78', backup: 'Yr5c9EGjXXc' },
+        6:  { primary: 'mfEOyWkrqGg', backup: '-eGIoc5xxTc' },
+        14: { primary: '7QqdfKikZEA', backup: '5IG8AfgTl84' },
+        16: { primary: '3VO7imcqr3M', backup: 'Va2G3NEtasg' },
+        17: { primary: 'nzq0eKjc2wY', backup: 't9CrBW7WG2E' },
+        35: { primary: 'GbKQzeaV6Qs', backup: '7FBUrtLQkzc' },
+        51: { primary: 'm64Dhq-Eygc', backup: '1KlJuowbQgg' },
+        53: { primary: '-vF5nldAFXc', backup: 'hwggnweXaqc' },
+        65: { primary: 'AyOHrzr0Muk', backup: 'Q8hbHXVaAGw' },
+        72: { primary: 'wLoFdXwZ7Aw', backup: '1LNw_1i_sgA' }
+      };
+
+      // [id, name, en, sci, habitatKey, tags, size, features, habitatDesc, callText]
+      const RAW_BIRDS = [
+        // ==================== 都市與郊區（20）====================
+        [1,"麻雀","Eurasian Tree Sparrow","Passer montanus","urban",["留鳥"],"14–15 cm","栗褐色頭頂、白臉頰配左右招牌小黑點，背羽茶褐帶黑縱紋。","全台市區巷弄、屋簷、公園草地與稻田，愛成群雙腳併攏跳躍覓食。","活潑熱鬧、此起彼落的「吱吱喳喳」聲"],
+        [2,"白頭翁","Light-vented Bulbul","Pycnonotus sinensis","urban",["留鳥"],"18–19 cm","頭頂烏黑但後枕有一大塊醒目白斑像戴白帽，背羽橄欖綠。","台灣西部與北部市區公園、校園、行道樹與陽台，都市三俠之一。","清脆響亮像在喊「巧克力、巧克力」的早安歌聲"],
+        [3,"綠繡眼","Swinhoe's White-eye","Zosterops simplex","urban",["留鳥"],"10–11 cm","體型嬌小黃綠色、喉部鵝黃，眼周鑲著清晰白色眼圈（青笛仔）。","都會行道樹、公園開花植物與果園，常成群跳躍吸食花蜜。","輕快甜美、細碎連綿的「唧—唧—唧哩哩」"],
+        [4,"樹鵲","Grey Treepie","Dendrocitta formosae","urban",["留鳥"],"33–35 cm","額頭與臉黑褐、頭頂灰白、雙翼黑有白斑，拖著長長灰黑尾羽。","都會大型公園、郊山次生林與校園高樹，飛行呈明顯波浪狀。","響亮略帶沙啞的「嘎—嘎—」或金屬感「嘎嘎嘎」"],
+        [5,"紅嘴黑鵯","Black Bulbul","Hypsipetes leucocephalus","urban",["留鳥"],"24–25 cm","全身漆黑蓬鬆、頭頂具冠羽，搭配極搶眼的鮮紅嘴喙與紅腳。","郊山樹林、都會大型公園與校園果樹，常喧鬧成群活動。","多變愛模仿，常見像貓叫的「喵—」或「小氣鬼」聲"],
+        [6,"珠頸斑鳩","Spotted Dove","Spilopelia chinensis","urban",["留鳥"],"28–32 cm","體色灰褐帶淡粉光澤，後頸兩側佈滿黑白點點宛如珍珠項鍊。","全台市區公園步道、冷氣室外機與陽台花盆，愛在地面散步覓食。","溫柔規律的三音節「咕—咕咕、咕—咕咕」"],
+        [7,"紅鳩","Red Collared Dove","Streptopelia tranquebarica","urban",["留鳥"],"22–24 cm","體型比珠頸斑鳩嬌小，雄鳥頭灰藍、背紫紅褐、頸後有細黑環；雌鳥土褐。","平地公園草皮、河濱綠地、校園操場與農田空曠處。","低沉急促帶捲舌感的「咕嚕—咕、咕嚕—咕」"],
+        [8,"野鴿","Rock Dove","Columba livia","urban",["留鳥"],"32–34 cm","羽色多變，標準型為藍灰色、頸部閃綠紫金屬光澤、翼有兩道黑帶。","都會廣場、高架橋下、公園與建築物屋簷，極度適應城市生活。","喉部共鳴、咕嚕咕嚕滾動的「咕嚕嚕—咕」"],
+        [9,"家八哥","Common Myna","Acridotheres tristis","urban",["外來種"],"23–25 cm","頭頸烏黑、身體咖啡褐色，眼周有一塊顯眼鮮黃裸皮與黃嘴黃腳。","全台市區馬路安全島、公園草地、商圈招牌與屋簷，不怕人。","嘈雜多變、響亮刺耳的「嘎嘎—啾哩—」"],
+        [10,"白尾八哥","Javan Myna","Acridotheres javanicus","urban",["外來種"],"23–25 cm","全身灰黑、額前有短短豎起羽冠，黃嘴黃腳，飛起時翅與尾端有白斑。","全台平地市區、路燈、河濱草地與農田，族群數量龐大。","響亮粗啞的「嘎—啾—」與各式口哨雜音"],
+        [11,"灰頭椋鳥","Chestnut-tailed Starling","Sturnia malabarica","urban",["外來種"],"19–21 cm","頭頸淡灰白、背部灰褐、腹部溫潤栗紅褐色，嘴基藍灰、嘴尖鮮黃。","都會公園高樹、校園木棉樹與行道樹，常成群吸食花蜜與果實。","清脆急促的金屬音「吱—啾—哩哩」"],
+        [12,"家燕","Barn Swallow","Hirundo rustica","urban",["留鳥"],"16–18 cm","背部閃亮深藍黑、額頭與喉部栗紅色、胸前有一道黑帶，尾羽呈深剪刀叉。","市區騎樓屋簷築泥巢，常在河濱、公園與農田低空敏捷盤旋捕飛蟲。","輕快活潑、連串細碎的「唧哩唧哩—啾」"],
+        [13,"洋燕","Pacific Swallow","Hirundo tahitica","urban",["留鳥"],"13–14 cm","外形似家燕但胸前沒有黑帶，腹部偏灰褐，尾羽分叉也較短淺。","市區橋梁下方、走廊騎樓與濱海建築築巢，全年皆可見。","輕柔清脆的「唧—唧哩」飛鳴聲"],
+        [14,"五色鳥","Taiwan Barbet","Psilopogon nuchalis","urban",["台灣特有種","留鳥"],"20–23 cm","全身翠綠圓潤，頭部點綴紅、藍、黃、黑、綠五色，嘴粗厚擅啄樹洞。","都會大型公園、校園老樹至中低海拔闊葉林樹冠層，又稱花和尚。","規律渾厚像和尚敲木魚的「嘓、嘓、嘓、嘓——」"],
+        [15,"小啄木","Grey-capped Pygmy Woodpecker","Yungipicus canicapillus","urban",["留鳥"],"14–16 cm","台灣最小啄木鳥，背部黑白橫斑相間、腹白帶縱紋，雄鳥後頭有小紅點。","郊區公園老樹、林道與中低海拔樹林，常緊貼樹幹螺旋爬行敲樹皮。","尖細清脆的「唧—唧—」與快速敲木「噠噠噠」"],
+        [16,"黑冠麻鷺","Malayan Night Heron","Gorsachius melanolophus","urban",["留鳥"],"45–50 cm","成鳥紅褐色配藍黑頭冠與藍綠眼先；亞成鳥滿身黑白斑，遇人愛定格裝樹枝。","都會大型公園陰涼草地與大學校園，擅長與土裡的大蚯蚓拔河。","黃昏夜間低沉渾厚的「屋—屋—屋—」像吹空瓶"],
+        [17,"大卷尾","Black Drongo","Dicrurus macrocercus","urban",["留鳥"],"28–30 cm","全身漆黑閃藍綠光澤，尾巴細長呈深剪刀分叉（台語俗稱烏秋）。","平地電線桿、公園高樹與農田空曠處，春夏護巢兇猛會俯衝驅敵。","尖銳金屬音「啾—嘎、嘎嘎」或模仿貓叫聲"],
+        [18,"白腰鵲鴝","White-rumped Shama","Copsychus malabaricus","urban",["外來種"],"25–28 cm","頭背亮黑、腹部橘栗色、腰部雪白，拖著優雅超長黑白尾羽，歌喉宛轉。","中南部與各地低海拔郊山竹林、果園與公園濃密灌叢底層。","宛轉悅耳、音階豐富婉轉的長串清脆口哨歌聲"],
+        [19,"黃尾鴝","Daurian Redstart","Phoenicurus auroreus","urban",["冬候鳥"],"14–15 cm","雄鳥頭頂銀灰、臉黑、腹部鮮橘紅，雙翼各有一塊醒目白斑；雌鳥溫潤灰褐。","冬季來台出沒於郊區公園灌叢、菜園圍籬與山區開闊林緣，愛抖尾巴。","清脆俐落的「滴—滴—」與「嘎嘎」警戒聲"],
+        [20,"黑枕藍鶲","Black-naped Monarch","Hypothymis azurea","urban",["留鳥"],"15–16 cm","雄鳥全身亮麗寶藍色、後腦像戴黑色小瓜皮帽、胸有細黑環；雌鳥灰褐翼。","郊區次生林、公園陰暗樹叢與低海拔溪畔，常靈活張尾翩翩起舞。","響亮急促、帶著活潑節奏的「回—回—回—」"],
+
+        // ==================== 田野與草地（14）====================
+        [21,"棕背伯勞","Long-tailed Shrike","Lanius schach","field",["留鳥"],"24–26 cm","頭頂灰色、戴黑色寬眼罩（蒙面俠）、背部與腰部鮮明橘棕色、尾長黑。","平地農田、荒草地與郊區電線桿頂端，愛居高臨下俯衝捕食昆蟲小蛙。","粗啞響亮的「嘎嘎嘎」亦會模仿多種鳥鳴"],
+        [22,"紅尾伯勞","Brown Shrike","Lanius cristatus","field",["冬候鳥"],"18–20 cm","體型較棕背伯勞小，背部與長尾皆呈溫暖紅褐色，臉部具黑色過眼線。","每年秋季過境並於台灣平地農田、灌叢與草原度冬，領域性極強。","急促尖銳連珠炮般的「嘎嘎嘎嘎—」警戒聲"],
+        [23,"褐頭鷦鶯","Plain Prinia","Prinia inornata","field",["留鳥"],"13–15 cm","全身土褐樸素、眉紋淡白、尾巴細長常翹高，在草叢間跳動像小精靈。","全台平地農田、河濱芒草叢與濕地蘆葦區，極為常見。","規律重複、像老舊縫紉機的「滴答滴答滴答」"],
+        [24,"灰頭鷦鶯","Yellow-bellied Prinia","Prinia flaviventris","field",["留鳥"],"13–14 cm","頭頂灰藍、背部橄欖綠、腹部呈溫暖淡黃色，尾長好動（俗稱丟丟銅）。","平地草生地、河濱芒草、公園灌叢與濕地邊緣，常站在草尖大聲高歌。","清脆像小孩吹玩具喇叭的「氣—喵、氣—喵」"],
+        [25,"斑文鳥","Scaly-breasted Munia","Lonchura punctulata","field",["留鳥"],"11–12 cm","頭背巧克力褐色，雪白胸腹部佈滿細緻魚鱗狀深褐斑紋，粗厚圓錐灰嘴。","平地稻田、河濱草地與公園草皮，常數十隻成群低飛啄食草籽。","細小輕柔、像小笛子的「啾—啾—」群聚聲"],
+        [26,"白腰文鳥","White-rumped Munia","Lonchura striata","field",["留鳥"],"10–11 cm","全身深褐帶白細羽軸紋、腹部乳白，飛起時腰部有一塊醒目雪白斑塊。","郊區農田邊緣、草叢與低海拔林緣，常成小群在芒草穗上覓食。","輕柔高細的「畢—畢—」短促聯繫聲"],
+        [27,"黃頭鷺","Eastern Cattle Egret","Bubulcus coromandus","field",["留鳥"],"48–52 cm","體型較小白鷺壯碩、黃嘴黑腳；繁殖季頭頸與背部換上亮麗橘黃色飾羽。","全台耕耘農田、牧場與草地，最愛緊跟在耕耘機或牛隻後方撿拾蟲蛙。","起飛或棲地互動時發出低沉短促「嘎—呃—」"],
+        [28,"白鶺鴒","White Wagtail","Motacilla alba","field",["留鳥"],"18–19 cm","黑白灰優雅配色、臉部雪白、胸前有黑色圍兜，邊快走邊上下規律搖尾巴。","平地農田、河濱步道、停車場空地與校園草坪，極常在地面奔跑捕蟲。","飛行時清脆響亮的雙音節「唧—唧、唧—唧」"],
+        [29,"灰鶺鴒","Grey Wagtail","Motacilla cinerea","field",["冬候鳥"],"18–19 cm","背部藍灰、具白色眉紋，胸腹與尾下覆羽呈鮮明亮黃色，尾巴特別修長。","秋冬常見於農田灌溉溝渠、山區溪畔石塊與河濱淺水邊，走路輕快搖尾。","清脆高亢、短促俐落的「唧—唧！」"],
+        [30,"東方黃鶺鴒","Eastern Yellow Wagtail","Motacilla tschutschensis","field",["冬候鳥"],"16–18 cm","背部橄欖綠、腹部鮮黃，冬季常換成較柔和淡黃腹，尾比灰鶺鴒略短。","秋冬大量出現於休耕水田、濕地草澤、河口泥灘與農田間覓食。","高細微捲舌、清亮拉長的「滋—俐、滋—俐」"],
+        [31,"小雲雀","Oriental Skylark","Alauda gulgula","field",["留鳥"],"15–16 cm","全身麻雀般土褐帶縱紋，頭頂具可豎起的小羽冠，後爪特別細長。","平地開闊旱田、海濱沙丘草原、河床沙洲與草地。","邊垂直高飛定點振翅邊傾瀉的「鈴鈴哩哩」長歌"],
+        [32,"棕三趾鶉","Barred Buttonquail","Turnix suscitator","field",["留鳥"],"14–16 cm","外形像迷你鵪鶉但腳只有三趾，體色黃褐配黑白橫斑；雌鳥較豔麗且負責求偶。","平地甘蔗田、開闊荒草地與農田埂間，受驚常低飛短距離後鑽入草叢。","雌鳥求偶時發出低沉連續共鳴的「嗚嚕嚕嚕—」"],
+        [33,"黑翅鳶","Black-winged Kite","Elanus caeruleus","field",["留鳥"],"31–35 cm","全身灰白配雙肩漆黑大塊斑、血紅寶石眼睛，擅長在空中定點振翅懸停。","台灣西部廣闊農田、河床草地與魚塭堤防，近年族群迅速擴張。","空中盤旋或警戒時發出尖銳清脆的「匹—優—」"],
+        [34,"紅隼","Common Kestrel","Falco tinnunculus","field",["冬候鳥"],"32–36 cm","體態修長、背羽磚紅帶黑斑；雄鳥頭尾灰藍，一樣擅長逆風定點振翅找獵物。","秋冬來台常停棲於農田電線桿、高壓電塔與開闊草原上空巡弋捕鼠。","急促高亢、連串清脆的「kee-kee-kee」"],
+
+        // ==================== 水域與濕地（30）====================
+        [35,"小白鷺","Little Egret","Egretta garzetta","wetland",["留鳥"],"55–65 cm","全身雪白修長，最大辨識口訣是「黑嘴、黑腳、穿亮黃色雨鞋（黃腳趾）」。","平地水田、溪流、都會河濱公園水池與河口濕地，會抖黃腳趾驚魚。","起飛或爭地盤時發出沙啞低沉的「嘎—嘎—」"],
+        [36,"中白鷺","Intermediate Egret","Ardea intermedia","wetland",["冬候鳥"],"65–72 cm","體型介於大小白鷺之間，黃嘴黑腳全黑趾，嘴裂僅延伸至眼睛正下方。","全台水田、濕地沼澤與魚塭，常與大白鷺、小白鷺混群覓食。","平時安靜，受驚起飛偶發低沉沙啞「嘎—」聲"],
+        [37,"大白鷺","Great Egret","Ardea alba","wetland",["冬候鳥"],"85–95 cm","台灣體型最大的白鷺，脖子修長呈優雅 S 型，嘴裂向後超過眼睛。","沿海河口濕地、大面積魚塭與水庫淺灘，秋冬數量最為壯觀。","警戒或起飛時低沉粗啞的「嘎——呃——」"],
+        [38,"蒼鷺","Grey Heron","Ardea cinerea","wetland",["冬候鳥"],"90–98 cm","台灣最大型鷺科，全身灰白、頭白帶黑眉延伸成黑色長飾羽，黃嘴沉穩大氣。","秋冬廣布於河口泥灘、大型魚塭、水庫與寬闊溪床，常靜立水中守株待兔。","飛行時遠遠就能聽見響亮沙啞的「呱——！」"],
+        [39,"夜鷺","Black-crowned Night Heron","Nycticorax nycticorax","wetland",["留鳥"],"58–62 cm","成鳥頭頂藍黑、背黑、腹灰白配鮮紅大眼（暗光鳥）；亞成鳥滿身棕白點。","都會公園池塘、溪流、魚塭與紅樹林，白天躲樹叢睡覺、黃昏飛出覓食。","黃昏高空飛過時響亮粗啞的「刮—！刮—！」"],
+        [40,"栗小鷺","Cinnamon Bittern","Ixobrychus cinnamomeus","wetland",["留鳥"],"36–40 cm","體型嬌小的栗紅色鷺鷥，雙眼鮮黃，受驚時會挺直細長脖子融入蘆葦叢。","水田、荷花池、濕地草澤與溝渠茂密水草間，多於清晨黃昏低飛現身。","繁殖期低沉重複、節奏穩定的「咕—咕—咕」"],
+        [41,"紅冠水雞","Common Moorhen","Gallinula chloropus","wetland",["留鳥"],"32–35 cm","全身暗灰黑、尾下有明顯兩塊白斑，最醒目是鮮紅額板配紅嘴黃尖。","都會公園池塘、生態池、稻田與濕地水域，邊游水邊前後點頭超可愛。","清脆響亮略帶鼻音的「嘎嚕—！咕嚕！」"],
+        [42,"白腹秧雞","White-breasted Waterhen","Amaurornis phoenicurus","wetland",["留鳥"],"30–33 cm","臉部、前頸到胸腹全為雪白，背羽深石板灰，尾下覆羽為醒目磚紅色。","水田邊緣、公園水池灌叢、溝渠與濕地草叢，行走迅速愛翹尾巴。","春夏黃昏極具穿透力的「苦惡、苦惡、苦惡」"],
+        [43,"小鸊鷉","Little Grebe","Tachybaptus ruficollis","wetland",["留鳥"],"25–28 cm","圓滾滾像浮在水面的毛球（水葫蘆），嘴基有淡黃斑，潛水功夫一流。","全台平靜池塘、埤塘、公園大水池與濕地湖泊，常瞬間潛入水底捕魚。","清脆顫抖、像馬兒輕嘶的「嗶哩哩哩哩—」"],
+        [44,"小水鴨","Eurasian Teal","Anas crecca","wetland",["冬候鳥"],"34–38 cm","台灣冬季最常見小型野鴨，雄鳥栗色頭配金屬綠大眼罩；雌鳥褐色羽斑。","每年秋冬成群棲息於全台河口濕地、魚塭、埤塘與河濱淺水灘地。","雄鳥清脆短促像吹小哨子的「克里—克里」"],
+        [45,"琵嘴鴨","Northern Shoveler","Spatula clypeata","wetland",["冬候鳥"],"48–52 cm","擁有像大湯匙般寬扁的招牌大嘴；雄鳥綠頭、白胸、栗紅脅羽色彩繽紛。","冬季廣布於沿海魚塭、鹽田、濕地湖泊，常成群繞圈游水濾食浮游生物。","低沉溫和帶鼻音的「呱—呱」與「吐克吐克」"],
+        [46,"赤頸鴨","Eurasian Wigeon","Mareca penelope","wetland",["冬候鳥"],"45–50 cm","雄鳥頭呈栗紅色、額頭有一道搶眼奶油黃亮帶，灰背粉胸，藍灰短嘴黑尖。","冬季成大群停棲於河口泥灘、沿海濕地與寬闊草澤，愛上岸吃嫩草。","雄鳥清亮悅耳的單音口哨「匹—優！」"],
+        [47,"尖尾鴨","Northern Pintail","Anas acuta","wetland",["冬候鳥"],"55–65 cm","體態修長優雅，雄鳥巧克力棕頭、細長白頸配一道白線，尾羽細長如針。","秋冬出沒於台灣各大河口濕地、魚塭與埤塘，常把尾巴翹高倒立覓食。","輕柔清脆的雙音口哨「克里—普」"],
+        [48,"鸕鷀","Great Cormorant","Phalacrocorax carbo","wetland",["冬候鳥"],"80–95 cm","大型烏黑水鳥，嘴端具銳利鉤狀方便咬魚，上岸後常張開雙翅曬乾羽毛。","冬季群聚於金門、台南濕地、桃園埤塘與各大水庫，集體潛水圍捕魚群。","棲息群聚時發出低沉粗啞的「咕嚕—嘎—」"],
+        [49,"翠鳥","Common Kingfisher","Alcedo atthis","wetland",["留鳥"],"16–17 cm","寶藍翠綠背部配亮橘紅腹部（魚狗），長尖嘴，像彩寶石般俯衝扎水捕魚。","清澈溪流、都會公園生態池、埤塘與水田溝渠，常靜佇水面枯枝上。","貼水面高速疾飛時高亢尖細的「唧—唧—！」"],
+        [50,"魚鷹","Osprey","Pandion haliaetus","wetland",["冬候鳥"],"55–63 cm","背部深褐、頭頂與胸腹雪白、具寬大黑過眼線，腳底長有防滑刺鱗專抓大魚。","秋冬常見於各大水庫、河口濕地與大面積魚塭上空盤旋，垂直入水抓魚。","高空盤旋時清亮急促的「啾—啾—啾—」"],
+        [51,"黑面琵鷺","Black-faced Spoonbill","Platalea minor","wetland",["冬候鳥"],"73–78 cm","全身雪白、臉部與長扁湯匙狀嘴喙漆黑，繁殖季腦後長出飄逸金黃飾羽。","每年冬天全球過半族群來台南七股、四草與嘉義鰲鼓等濕地魚塭度冬。","平時安靜，互動時偶發低沉「呃、呃」或拍嘴「喀喀」"],
+        [52,"黑翅長腳鷸","Black-winged Stilt","Himantopus himantopus","wetland",["留鳥"],"35–40 cm","黑白分明羽色配細長筆直黑嘴與超長粉紅腿（與 #53 高蹺鴴為同種異名）。","全台沿海濕地、休耕水田、鹽田與淺水魚塭，涉水啄食水生昆蟲與小蝦。","高亢清脆、連續急促的「嘰—嘰—嘰」像吹哨"],
+        [53,"高蹺鴴","Black-winged Stilt","Himantopus himantopus","wetland",["留鳥"],"35–40 cm","擁有不成比例的細長粉紅雙腿像踩高蹺（與 #52 黑翅長腳鷸為同種異名）。","全台沿海鹽田、魚塭與休耕水田，繁殖期見外敵靠近會盤旋大叫擬傷護雛。","高亢清脆、連續急促的「嘰—嘰—嘰」警戒聲"],
+        [54,"小環頸鴴","Little Ringed Plover","Charadrius dubius","wetland",["留鳥"],"15–17 cm","背沙褐、腹白、頸部繞一圈完整黑環，最迷人是眼周有一圈亮黃眼眶。","河床礫石灘、乾涸魚塭、海濱沙地與水田，奔跑幾步就停下像裝了發條。","清脆略帶下降音的單音「匹—喔、匹—喔」"],
+        [55,"東方環頸鴴","Kentish Plover","Charadrius alexandrinus","wetland",["留鳥"],"16–18 cm","胸前黑斑在中央斷開成左右兩塊黑胸斑，無黃眼眶，腳呈暗灰黑色。","全台沿海沙灘、河口泥灘、鹽田與魚塭堤岸，會在沙地淺凹處直接產卵。","輕柔短促、清亮上揚的「匹—瑞、匹—瑞」"],
+        [56,"青足鷸","Common Greenshank","Tringa nebularia","wetland",["冬候鳥"],"30–35 cm","體型修長、背灰腹白，最大特徵是嘴微向上翹且擁有一雙灰綠色長腳。","秋冬常見於河口泥灘、魚塭淺水區與休耕水田，常疾走橫掃水面追捕小魚。","起飛時響亮三音節清脆口哨「啾—啾—啾！」"],
+        [57,"鷹斑鷸","Wood Sandpiper","Tringa glareola","wetland",["冬候鳥"],"19–21 cm","背部深褐密佈細緻白點、白眉線清晰延伸過眼，雙腳呈黃綠色。","秋冬廣布於淡水濕地、休耕水田與草澤淺灘，停棲時偶會上下點尾。","起飛時急促清脆的三連音「唧—唧—唧！」"],
+        [58,"磯鷸","Common Sandpiper","Actitis hypoleucos","wetland",["冬候鳥"],"19–21 cm","背棕褐、腹雪白，肩膀前方有一道明顯白色彎月切口，邊走邊上下抖屁股。","全台溪流石岸、海堤消波塊、水田溝渠與河濱水邊，多單獨活動。","貼水面低飛時高細連串的「吱—吱—吱—」"],
+        [59,"黑腹燕鷗","Whiskered Tern","Chlidonias hybrida","wetland",["夏候鳥"],"23–26 cm","夏羽頭頂黑、臉白、胸腹呈深灰黑色（穿黑背心）；冬羽轉為清雅灰白。","春夏常成大群在魚塭、濕地與水庫上空輕盈盤旋，點水俯衝捕食小魚。","飛行時略帶鼻音、短促沙啞的「克—瑞克」"],
+        [60,"小燕鷗","Little Tern","Sternula albifrons","wetland",["夏候鳥"],"22–25 cm","體型嬌小，繁殖季頭黑、額頭有醒目白色倒三角形、黃嘴黑尖配鮮黃腳。","每年春夏來台於河口礫石沙灘築巢育雛，會高速懸停後垂直俯衝扎水抓魚。","高亢清脆、節奏急促的「克里—克里—」"],
+        [61,"黑嘴鷗","Saunders's Gull","Saundersilarus saundersi","wetland",["冬候鳥"],"30–33 cm","小型海鷗，嘴喙短粗漆黑，夏羽頭部全黑配白眼弧；冬羽頭白耳後有暗灰斑。","珍稀冬候鳥，冬季出沒於台灣西部河口泥灘、大肚溪口與台南沿海魚塭。","尖細略帶鼻音的「克—亞、克—亞」"],
+        [62,"紅嘴鷗","Black-headed Gull","Chroicocephalus ridibundus","wetland",["冬候鳥"],"37–41 cm","台灣冬季最常見海鷗，嘴與腳呈鮮紅或暗紅色；冬羽頭白耳後有黑點。","秋冬群聚於沿海漁港、河口、大型魚塭與濕地，常隨漁船盤旋覓食。","粗啞響亮帶鼻音的「嘎—亞、嘎—亞」"],
+        [63,"彩鷸","Greater Painted-snipe","Rostratula benghalensis","wetland",["留鳥"],"23–26 cm","眼周具白色逗點眼鏡紋、肩有金色 V 字帶；雌鳥比雄鳥華麗且由雄鳥孵蛋。","平地水田、菱角田、蓮花池與草澤濕地，生性隱密多於晨昏現身。","雌鳥黃昏時發出低沉單調如吹瓶的「屋—屋—」"],
+        [64,"河烏","Brown Dipper","Cinclus pallasii","wetland",["留鳥"],"21–23 cm","全身均勻巧克力深褐色、尾短圓潤，不怕冰冷急流，能潛入溪底逆水抓蟲。","中低海拔清澈急流山溪與瀑布岩石間，是水質潔淨的重要生態指標。","高亢穿透水聲的「吱—吱—」與清脆鳴唱"],
+
+        // ==================== 山區與森林（36）====================
+        [65,"台灣藍鵲","Taiwan Blue Magpie","Urocissa caerulea","forest",["台灣特有種","留鳥"],"63–68 cm","頭頸烏黑、全身寶藍、金黃眼配鮮紅嘴與紅腳，拖著黑白長尾羽（長尾山娘）。","低至中海拔闊葉林、山區步道與近郊樹林，常成群直線滑翔過山谷。","清脆金屬感「鏘—鏘—鏘」或沙啞「嘎—嘎—」"],
+        [66,"帝雉","Mikado Pheasant","Syrmaticus mikado","forest",["台灣特有種","留鳥"],"50–85 cm","千元鈔票主角！雄鳥深藍黑閃紫光、臉紅、長尾帶整齊白橫斑；雌鳥橄欖褐。","中高海拔 1,800–3,200m 雲霧繚繞的針闊混合林與箭竹林，常於霧中漫步林道。","警戒或晨昏發出低沉輕柔的「咯—咯—」"],
+        [67,"藍腹鷴","Swinhoe's Pheasant","Lophura swinhoii","forest",["台灣特有種","留鳥"],"50–80 cm","雄鳥深藍紫閃金屬光澤、頭頂白冠、肩背雪白、紅臉紅腳配兩根雪白中央長尾。","中低海拔 300–2,300m 原始闊葉林底層，清晨雨後常於大雪山、溪頭林道現身。","低沉警戒「咕—咕—」與求偶快速振翅噗噗聲"],
+        [68,"黃山雀","Yellow Tit","Machlolophus holsti","forest",["台灣特有種","留鳥"],"12–13 cm","頭頂有帥氣直立黑色龐克羽冠，臉頰與胸腹鮮亮鵝黃色、背部藍灰。","中海拔 1,000–2,300m 闊葉林樹冠層，常混在山雀鳥浪中靈活倒掛枝頭。","清脆響亮、音調多變的「嘀嘀—啾哩」"],
+        [69,"冠羽畫眉","Taiwan Yuhina","Yuhina brunneiceps","forest",["台灣特有種","留鳥"],"12–13 cm","頭頂褐色尖羽冠像戴小皇冠，臉白配黑色八字鬍與過眼線，外型萌度破表。","中海拔 1,000–2,800m 山林與櫻花季樹梢，常數十隻成群穿梭喧鬧。","清脆可愛、像在唱「吐米酒、吐米酒」"],
+        [70,"白耳畫眉","White-eared Sibia","Heterophasia auricularis","forest",["台灣特有種","留鳥"],"22–24 cm","頭頂漆黑、由眼後向兩側延伸出兩道飄逸雪白長飾羽，背栗紅、長尾黑藍。","中海拔 1,000–2,500m 闊葉林與森林遊樂區高樹，愛在山櫻花間吸花蜜。","高亢清亮、穿透山谷的「飛—飛—飛—飛」長哨"],
+        [71,"藪鳥","Steere's Liocichla","Liocichla steerii","forest",["台灣特有種","留鳥"],"17–19 cm","全身橄欖黃綠、臉頰有醒目鮮黃圓斑（與 #76 黃胸藪眉為同種異名）。","中海拔山區林下灌叢與步道邊緣，生性不怕人，常在涼亭與營區旁跳躍。","響亮圓潤、尾音上揚的「急—救兒—！」"],
+        [72,"台灣紫嘯鶇","Taiwan Whistling Thrush","Myophonus insularis","forest",["台灣特有種","留鳥"],"28–30 cm","全身深邃紫藍色在陽光下閃耀金屬藍光，雙眼暗紅，停石頭上愛扇形開合尾羽。","低至中海拔山區清澈溪流、瀑布岩石與山澗步道，沿溪低飛捕食溪蝦水蟲。","尖銳高亢拉長尾音的「吱————」像單車煞車"],
+        [73,"青背山雀","Green-backed Tit","Parus monticolus","forest",["留鳥"],"12–13 cm","頭黑配雪白大臉頰、背部翠綠、腹部鮮黃且正中央有一道帥氣黑色領帶。","中海拔 1,000–2,800m 森林與步道樹林，活潑好動常成群與其他山雀同行。","清脆明亮、規律反覆的「匹—啾、匹—啾」"],
+        [74,"赤腹山雀","Chestnut-bellied Tit","Sittiparus castaneoventris","forest",["台灣特有種","留鳥"],"11–12 cm","頭黑、額頰淡米白、背部灰藍，整個胸腹部呈溫暖搶眼的栗紅褐色。","中低海拔 400–2,000m 原始闊葉林，動作靈巧敏捷，喜愛敲開堅果覓食。","高細清脆帶沙音的「滋—滋—畢畢」"],
+        [75,"煤山雀","Coal Tit","Periparus ater","forest",["留鳥"],"10–11 cm","體型迷你，頭黑具小羽冠、白臉頰配後頸雪白斑，背部藍灰、翼有兩道白紋。","中高海拔 2,000–3,500m 針葉林（鐵杉、冷杉、松林），常倒掛松果啄食種子。","清細尖亮、快速反覆的「吱吱—匹—吱吱—匹」"],
+        [76,"黃胸藪眉","Steere's Liocichla","Liocichla steerii","forest",["台灣特有種","留鳥"],"17–19 cm","橄欖綠羽配鮮黃臉頰與淡黃胸腹（與 #71 藪鳥為同種異名，中海拔最親人畫眉）。","阿里山、溪頭、太平山等中海拔步道與灌叢，常成對在草地邊緣跳躍覓食。","響亮清脆的「急—救兒—！」與低沉咕嚕警戒聲"],
+        [77,"小彎嘴","Taiwan Scimitar Babbler","Pomatorhinus musicus","forest",["台灣特有種","留鳥"],"20–22 cm","細長下彎的黃黑嘴喙、寬大黑臉罩配醒目白眉紋、後頸栗紅、胸白帶黑縱紋。","低至中海拔郊山灌叢、竹林與森林底層，生性害羞只聞其聲不見其影。","低沉渾厚、在林間迴盪的「嘟—嘟嘟—」"],
+        [78,"大彎嘴","Black-necklaced Scimitar Babbler","Erythrogenys erythrocnemis","forest",["台灣特有種","留鳥"],"24–26 cm","比小彎嘴大一號，長彎嘴暗灰、臉頰與脅羽磚紅，胸前滿佈大塊黑色水滴斑。","中低海拔 300–2,000m 濃密山林底層與竹林，常成對在落葉堆中翻找昆蟲。","響亮豪邁的「嘎—歸—、嘎—歸—」對唱"],
+        [79,"頭烏線","Dusky Fulvetta","Schoeniparus brunneus","forest",["留鳥"],"13–14 cm","全身樸實茶褐色，頭頂兩側各有兩道清晰黑線一直延伸到後頸（名字由來）。","平地郊山至中海拔 2,000m 濃密灌叢底層，台灣森林裡最常聽見的背景音之一。","清亮高亢像在吹口哨問「是誰？是誰？是誰？」"],
+        [80,"竹雞","Taiwan Bamboo Partridge","Bambusicola sonorivox","forest",["台灣特有種","留鳥"],"24–26 cm","圓胖土褐配栗紅喉部、灰藍眉線與胸前栗色鱗斑，多在地面奔跑少高飛。","平地郊山竹林、茶園、草叢與低海拔山坡，清晨常集體在山坡高歌。","極具喜感、由慢到快連喊「雞狗乖、雞狗乖！」"],
+        [81,"深山竹雞","Taiwan Partridge","Arborophila crudigularis","forest",["台灣特有種","留鳥"],"26–28 cm","頭側黑白相間、喉部雪白配下方一道黑頸環、身體藍灰配栗色斑紋，模樣典雅。","中海拔 700–2,300m 幽暗原始闊葉林底層，生性極隱密，多靠清晨鳴聲發現。","音調漸高急促的「咕嚕—咕嚕—咕嚕！」二重唱"],
+        [82,"灰喉山椒","Grey-chinned Minivet","Pericrocotus solaris","forest",["留鳥"],"17–19 cm","雄鳥頭背黑、腰與胸腹呈烈焰朱紅色；雌鳥則為明亮鮮黃色，常紅黃成群飛舞。","中低海拔 300–2,200m 闊葉林高大樹冠層，成群如彩帶般在樹梢穿梭覓食。","輕快細柔、高空飄落的「滋—哩、滋—哩」"],
+        [83,"小剪尾","Little Forktail","Enicurus scouleri","forest",["留鳥"],"12–14 cm","迷你可愛的黑白圓球，額頭雪白、背黑腹白配短小剪刀尾，常站在急流巨石上。","中低海拔清澈山溪瀑布與急流岩石，邊走邊快速上下擺動短尾巴捕水蟲。","貼溪面飛行時尖細清亮的單音「吱—！」"],
+        [84,"鉛色水鶇","Plumbeous Water Redstart","Phoenicurus fuliginosus","forest",["留鳥"],"12–13 cm","雄鳥全身深鉛藍灰配鮮豔栗紅尾羽；雌鳥灰褐、尾基雪白配黑尾端。","低至中海拔山區溪流、攔砂壩與溪畔岩石，領域性強愛張開尾羽上下擺動。","尖細清脆穿透溪水聲的「吱—吱—」"],
+        [85,"火冠戴菊鳥","Flamecrest","Regulus goodfellowi","forest",["台灣特有種","留鳥"],"9 cm","台灣最小鳥類之一！黃綠羽、黑眼眶配白臉，頭頂中央燃燒著鮮豔橘紅火冠。","中高海拔 2,000–3,700m 針葉林樹冠層，動作極快如閃電般在松針間跳躍。","極細極高、如銀針般的「滋—滋—滋—」"],
+        [86,"星鴉","Spotted Nutcracker","Nucifraga caryocatactes","forest",["留鳥"],"32–35 cm","全身巧克力黑褐但佈滿密密麻麻雪白水滴斑點宛如星空，粗厚黑嘴擅敲松果。","高海拔 2,200–3,600m 針葉林（合歡山、塔塔加常見），有秋季儲藏松子的習性。","高海拔樹梢粗啞響亮的「嘎—嘎—嘎—」"],
+        [87,"酒紅朱雀","Taiwan Rosefinch","Carpodacus formosanus","forest",["台灣特有種","留鳥"],"14–16 cm","雄鳥全身如醇厚紅酒般深玫瑰紅、配亮眼銀粉眉紋；雌鳥則為溫潤棕色縱紋。","高海拔 2,000–3,600m 箭竹叢與針葉林（與 #94 台灣朱雀同種，合歡山極常見）。","清脆上揚像在問「找—你？找—你？」"],
+        [88,"金翼白眉","White-whiskered Laughingthrush","Trochalopteron morrisonianum","forest",["台灣特有種","留鳥"],"26–28 cm","高山最不怕人明星鳥！褐色身體配醒目白色長眉與八字鬍，雙翼閃耀亮金黃色。","中高海拔 2,000–3,500m 箭竹林、高山停車場與山屋周邊，常成對在地面跳躍。","宏亮悅耳、充滿朝氣的「啾—啾—啾哩！」"],
+        [89,"栗背林鴝","Collared Bush Robin","Tarsiger johnstoniae","forest",["台灣特有種","留鳥"],"12–13 cm","雄鳥頭黑配細長雪白眉紋、頸背與胸側圍著一圈鮮豔栗橘色披肩；雌鳥橄欖褐。","高海拔 2,000–3,500m 針葉林底層、箭竹叢與高山步道，清晨常站在矮枝高歌。","清細尖脆的三音節口哨「吱—匹—優」"],
+        [90,"白尾鴝","White-tailed Robin","Myiomela leucura","forest",["留鳥"],"17–19 cm","雄鳥全身深邃靛藍黑、額頭閃亮寶藍，展開尾巴時兩側露出雪白長羽；雌鳥棕褐。","中低海拔 800–2,300m 陰暗潮濕的闊葉林底層與溪谷林道，常在林下開合尾羽。","宛轉優美、空靈清亮的「哆—咪—索—拉」"],
+        [91,"白喉噪眉","White-throated Laughingthrush","Pterorhinus albogularis","forest",["留鳥"],"28–30 cm","體型碩大、背橄欖褐、腹橘棕，最醒目是整個喉部呈現一大片潔白雪亮羽毛。","中海拔 1,000–2,500m 森林樹冠與林緣，常十多隻成大群邊吵鬧邊集體移動。","像一群人在林間笑鬧的「哇哈哈—嘎嘎嘎」"],
+        [92,"台灣鷦眉","Taiwan Cupwing","Pnoepyga formosana","forest",["台灣特有種","留鳥"],"9 cm","幾乎沒有尾巴的圓滾滾深褐小毛球，胸腹佈滿精緻鱗片花紋（鱗胸鷦鷯）。","中海拔 1,000–2,800m 潮濕陰暗的森林底層蕨類與倒木間，如小老鼠般鑽行。","高亢清脆、令人難忘的「電鈴聲」連串顫鳴"],
+        [93,"烏頭翁","Styan's Bulbul","Pycnonotus taivanus","forest",["台灣特有種","留鳥"],"18–19 cm","與白頭翁極似，但整個頭頂全黑如戴黑帽，嘴角下方有一顆可愛橘紅小點。","台灣特有種，主要分布於花東縱谷、恆春半島與台東郊山樹林及公園。","清脆響亮、音色與白頭翁相近的「巧克力！」"],
+        [94,"台灣朱雀","Taiwan Rosefinch","Carpodacus formosanus","forest",["台灣特有種","留鳥"],"14–16 cm","台灣高山特化獨立種（亦稱 #87 酒紅朱雀），雄鳥酒紅羽配粉白眉紋極夢幻。","中橫、合歡山、玉山塔塔加等高海拔 2,200–3,600m 箭竹與松林草坡常見。","清脆圓潤、帶點疑問語氣的「啾—咪？」"],
+        [95,"大冠鷲","Crested Serpent Eagle","Spilornis cheela","forest",["留鳥"],"55–74 cm","台灣山區最常見大型猛禽，腦後具黑白相間羽冠，飛翔時翼後緣有一道寬白帶。","全台低至中海拔山區森林與丘陵上空，常乘著熱氣流悠閒盤旋，專吃蛇類。","高空盤旋時響亮悠長、穿透山谷的「忽—溜—！」"],
+        [96,"鳳頭蒼鷹","Crested Goshawk","Accipiter trivirgatus","forest",["留鳥"],"40–48 cm","胸白帶粗褐縱紋、腹橫紋、頭後有小羽冠，飛行時尾下白色蓬鬆像穿白內褲。","從低海拔山林一路擴展到都會大型公園高樹，常隱蔽在樹冠伏擊松鼠與小鳥。","繁殖季空中抖翅宣示領域的「嘰—嘰—嘰」"],
+        [97,"灰面鵟鷹","Grey-faced Buzzard","Butastur indicus","forest",["過境鳥"],"47–51 cm","臉頰灰褐、白喉中央有一條清晰黑縱線，每年國慶前後萬隻過境墾丁形成鷹河。","每年 3–4 月北返（八卦山）與 10 月南遷（墾丁滿州）大量過境台灣山區上空。","遷徙盤旋時清脆響亮的「匹—克威、匹—克威」"],
+        [98,"黑鳶","Black Kite","Milvus migrans","forest",["留鳥"],"58–68 cm","全身深褐、翼下有淡色斑，最大辨識特徵是展開的尾巴呈現魚尾狀凹叉（老鷹）。","基隆港、淡水河口、屏東山區與水庫周邊，善於乘風滑翔並撿食水面魚類。","高空滑翔時淒美悠長的馬嘶口哨「匹—哩哩哩」"],
+        [99,"繡眼畫眉","Grey-cheeked Fulvetta","Alcippe morrisonia","forest",["留鳥"],"13–14 cm","頭灰褐、眼周鑲著顯眼白色眼圈配眉上黑線，體背茶褐，是中海拔鳥浪的領隊！","低至中海拔 300–2,500m 闊葉林中下層，常成大群帶領其他山雀畫眉一起覓食。","高亢清脆、快速連發的「急—急急急急！」"],
+        [100,"台灣畫眉","Taiwan Hwamei","Garrulax taewanus","forest",["台灣特有種","留鳥"],"22–24 cm","全身溫潤棕褐且從頭到胸佈滿細密黑色縱紋，沒有白色眼圈與白眉。","全台低海拔丘陵、郊山灌叢、果園與溪畔草叢，歌聲宏亮婉轉是森林歌唱家。","宏亮多變、節奏豐富婉轉的連串森林交響曲"]
+      ];
+
+      const BIRDS = RAW_BIRDS.map(function (r) {
+        return {
+          id: r[0],
+          name: r[1],
+          en: r[2],
+          sci: r[3],
+          habitat: r[4],
+          tags: r[5],
+          size: r[6],
+          features: r[7],
+          habitatDesc: r[8],
+          callText: r[9],
+          verifiedYT: VERIFIED_YT_MAP[r[0]] || null
+        };
+      });
+
+      const BIRD_BY_ID = {};
+      BIRDS.forEach(function (b) { BIRD_BY_ID[b.id] = b; });
+      const QUICK_SEED_URBAN_IDS = [1, 2, 3, 6, 16, 17]; // 麻雀、白頭翁、綠繡眼、珠頸斑鳩、黑冠麻鷺、大卷尾
+
+      /* =========================================================
+         3. 四大棲地專屬精緻 SVG 剪影（載入中與離線備援）
+         ========================================================= */
+      function getHabitatSVG(habitatKey) {
+        if (habitatKey === 'urban') {
+          return '<svg viewBox="0 0 240 150" style="width:100%;height:100%;display:block;" aria-hidden="true">' +
+            '<rect width="240" height="150" fill="#183830"/>' +
+            '<circle cx="195" cy="34" r="14" fill="#f0b454" opacity="0.82"/>' +
+            '<rect x="16" y="88" width="26" height="62" rx="3" fill="#102620"/>' +
+            '<rect x="46" y="74" width="32" height="76" rx="3" fill="#122c25"/>' +
+            '<rect x="180" y="82" width="38" height="68" rx="3" fill="#102620"/>' +
+            '<path d="M12 128 Q120 112 228 130" stroke="#4f3b2c" stroke-width="6" fill="none" stroke-linecap="round"/>' +
+            '<ellipse cx="122" cy="96" rx="22" ry="15" fill="#e69f38" opacity="0.9"/>' +
+            '<circle cx="139" cy="84" r="10" fill="#e69f38"/>' +
+            '<path d="M148 82 L158 84 L148 88 Z" fill="#faf8f2"/>' +
+            '<path d="M102 100 L82 114 L96 108 Z" fill="#c78322"/>' +
+            '</svg>';
+        }
+        if (habitatKey === 'field') {
+          return '<svg viewBox="0 0 240 150" style="width:100%;height:100%;display:block;" aria-hidden="true">' +
+            '<rect width="240" height="150" fill="#203b2a"/>' +
+            '<circle cx="52" cy="36" r="16" fill="#f3c368" opacity="0.8"/>' +
+            '<path d="M0 118 Q60 100 120 114 T240 110 L240 150 L0 150 Z" fill="#14291c"/>' +
+            '<path d="M35 142 Q42 104 30 82 M60 142 Q66 106 72 86 M185 142 Q178 102 192 80" stroke="#3c6e47" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+            '<path d="M102 68 Q120 50 138 68 Q122 64 102 68 Z" fill="#faf8f2" opacity="0.9"/>' +
+            '<ellipse cx="122" cy="92" rx="19" ry="12" fill="#e69f38"/>' +
+            '<circle cx="136" cy="82" r="8.5" fill="#e69f38"/>' +
+            '</svg>';
+        }
+        if (habitatKey === 'wetland') {
+          return '<svg viewBox="0 0 240 150" style="width:100%;height:100%;display:block;" aria-hidden="true">' +
+            '<rect width="240" height="150" fill="#14333d"/>' +
+            '<circle cx="192" cy="36" r="14" fill="#f7d288" opacity="0.82"/>' +
+            '<rect x="0" y="106" width="240" height="44" fill="#0d242c"/>' +
+            '<path d="M18 120 Q52 116 86 120 M130 128 Q170 124 212 128" stroke="#2c6678" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+            '<line x1="118" y1="88" x2="115" y2="122" stroke="#f0b454" stroke-width="2.5"/>' +
+            '<line x1="126" y1="88" x2="129" y2="122" stroke="#f0b454" stroke-width="2.5"/>' +
+            '<ellipse cx="122" cy="80" rx="20" ry="12" fill="#faf8f2"/>' +
+            '<path d="M135 76 Q142 54 134 48" stroke="#faf8f2" stroke-width="6" fill="none" stroke-linecap="round"/>' +
+            '<path d="M136 48 L156 50 L136 53 Z" fill="#e69f38"/>' +
+            '</svg>';
+        }
+        return '<svg viewBox="0 0 240 150" style="width:100%;height:100%;display:block;" aria-hidden="true">' +
+          '<rect width="240" height="150" fill="#122b23"/>' +
+          '<path d="M0 150 L54 74 L106 150 Z" fill="#193b30"/>' +
+          '<path d="M72 150 L146 58 L224 150 Z" fill="#0f241d"/>' +
+          '<path d="M150 150 L204 82 L240 150 Z" fill="#1d4438"/>' +
+          '<ellipse cx="118" cy="88" rx="22" ry="13" fill="#4690d8"/>' +
+          '<circle cx="136" cy="78" r="9.5" fill="#11161b"/>' +
+          '<path d="M144 76 L156 79 L144 82 Z" fill="#e53935"/>' +
+          '<path d="M98 92 L64 116" stroke="#4690d8" stroke-width="7" stroke-linecap="round"/>' +
+          '</svg>';
+      }
+
+      /* =========================================================
+         4. 百鳥高效照片懶載入引擎
+            (IntersectionObserver + 最多 4 並行佇列 + sessionStorage)
+         ========================================================= */
+      const PHOTO_CACHE_KEY = 'tw_bird100_photo_cache_v2';
+      const MAX_CONCURRENT = 4;
+      const photoCacheBySci = {};
+      const queuedSciSet = new Set();
+      const loadQueue = [];
+      let activeFetches = 0;
+
+      try {
+        const rawCache = sessionStorage.getItem(PHOTO_CACHE_KEY);
+        if (rawCache) {
+          const parsed = JSON.parse(rawCache);
+          Object.keys(parsed).forEach(function (k) {
+            if (parsed[k] && parsed[k].status === 'loaded' && parsed[k].url) {
+              photoCacheBySci[k] = parsed[k];
+            }
+          });
+        }
+      } catch (e) {}
+
+      function persistPhotoCache() {
+        try {
+          sessionStorage.setItem(PHOTO_CACHE_KEY, JSON.stringify(photoCacheBySci));
+        } catch (e) {}
+      }
+
+      function isValidImageUrl(url) {
+        return typeof url === 'string' && /\.(jpe?g|png|webp)(\?.*)?$/i.test(url);
+      }
+
+      async function fetchJsonSafe(url, timeoutMs) {
+        const controller = new AbortController();
+        const timer = setTimeout(function () { controller.abort(); }, timeoutMs || 8500);
+        try {
+          const res = await fetch(url, { signal: controller.signal });
+          clearTimeout(timer);
+          if (!res.ok) return null;
+          return await res.json();
+        } catch (err) {
+          clearTimeout(timer);
+          return null;
+        }
+      }
+
+      async function fetchBirdPhotoThreeTier(bird) {
+        // 第 1 層：English Wikipedia REST API
+        const enTitle = bird.en.replace(/\s+/g, '_');
+        const enData = await fetchJsonSafe('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(enTitle));
+        if (enData && (enData.thumbnail?.source || enData.originalimage?.source)) {
+          const thumb = enData.thumbnail?.source;
+          const orig = enData.originalimage?.source;
+          if (isValidImageUrl(thumb) || isValidImageUrl(orig)) {
+            return {
+              status: 'loaded',
+              url: isValidImageUrl(thumb) ? thumb : orig,
+              fullUrl: isValidImageUrl(orig) ? orig : thumb,
+              sourceLabel: '真實生態照 · Wikimedia'
+            };
+          }
+        }
+
+        // 第 2 層：Chinese Wikipedia REST API
+        const zhData = await fetchJsonSafe('https://zh.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(bird.name));
+        if (zhData && (zhData.thumbnail?.source || zhData.originalimage?.source)) {
+          const thumb = zhData.thumbnail?.source;
+          const orig = zhData.originalimage?.source;
+          if (isValidImageUrl(thumb) || isValidImageUrl(orig)) {
+            return {
+              status: 'loaded',
+              url: isValidImageUrl(thumb) ? thumb : orig,
+              fullUrl: isValidImageUrl(orig) ? orig : thumb,
+              sourceLabel: '真實生態照 · Wikimedia'
+            };
+          }
+        }
+
+        // 第 3 層：Wikimedia Commons API (以拉丁學名搜尋)
+        const commonsUrl = 'https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=' +
+          encodeURIComponent(bird.sci) + '&gsrlimit=4&prop=imageinfo&iiprop=url&iiurlwidth=640&origin=*&format=json';
+        const commonsData = await fetchJsonSafe(commonsUrl);
+        if (commonsData && commonsData.query && commonsData.query.pages) {
+          const pages = Object.values(commonsData.query.pages);
+          for (let i = 0; i < pages.length; i++) {
+            const info = pages[i].imageinfo && pages[i].imageinfo[0];
+            if (!info) continue;
+            const tUrl = info.thumburl || info.url;
+            const fUrl = info.url || info.thumburl;
+            if (isValidImageUrl(tUrl) || isValidImageUrl(fUrl)) {
+              return {
+                status: 'loaded',
+                url: isValidImageUrl(tUrl) ? tUrl : fUrl,
+                fullUrl: isValidImageUrl(fUrl) ? fUrl : tUrl,
+                sourceLabel: '真實生態照 · Wikimedia'
+              };
+            }
+          }
+        }
+
+        return { status: 'offline', url: null, fullUrl: null, sourceLabel: '離線棲地剪影' };
+      }
+
+      function enqueuePhotoLoad(bird, highPriority) {
+        if (!bird) return;
+        const sci = bird.sci;
+        if (photoCacheBySci[sci] && (photoCacheBySci[sci].status === 'loaded' || photoCacheBySci[sci].status === 'offline')) {
+          return;
+        }
+        if (queuedSciSet.has(sci)) return;
+        queuedSciSet.add(sci);
+        if (highPriority) {
+          loadQueue.unshift(bird);
+        } else {
+          loadQueue.push(bird);
+        }
+        pumpPhotoQueue();
+      }
+
+      function pumpPhotoQueue() {
+        while (activeFetches < MAX_CONCURRENT && loadQueue.length > 0) {
+          const bird = loadQueue.shift();
+          if (!bird) continue;
+          activeFetches++;
+          fetchBirdPhotoThreeTier(bird).then(function (result) {
+            photoCacheBySci[bird.sci] = result;
+            if (result.status === 'loaded') persistPhotoCache();
+            refreshPhotoSlotsBySci(bird.sci);
+          }).finally(function () {
+            activeFetches--;
+            queuedSciSet.delete(bird.sci);
+            pumpPhotoQueue();
+          });
+        }
+      }
+
+      function refreshPhotoSlotsBySci(sci) {
+        BIRDS.forEach(function (bird) {
+          if (bird.sci !== sci) return;
+          const cardSlot = byId('card-media-' + bird.id);
+          if (cardSlot) cardSlot.innerHTML = renderBirdMediaInner(bird, { compact: false, clickableZoom: false });
+          const logSlot = byId('log-media-' + bird.id);
+          if (logSlot) logSlot.innerHTML = renderBirdMediaInner(bird, { compact: true, clickableZoom: false });
+          if (currentDetailId === bird.id) {
+            const detailSlot = byId('detail-media-slot');
+            if (detailSlot) detailSlot.innerHTML = renderBirdMediaInner(bird, { compact: false, clickableZoom: true });
+          }
+          if (appState.activeTab === 'quiz' && appState.quiz.currentBird && appState.quiz.currentBird.id === bird.id) {
+            if (appState.quiz.mode === 'photo') renderQuizPhotoStage();
+            if (appState.quiz.answered) updateQuizRevealPhoto();
+          }
+        });
+      }
+
+      let mediaObserver = null;
+      function setupMediaObserver() {
+        if (!('IntersectionObserver' in window)) return;
+        mediaObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            const birdId = Number(entry.target.getAttribute('data-lazy-bird'));
+            const bird = BIRD_BY_ID[birdId];
+            if (bird) enqueuePhotoLoad(bird, false);
+            mediaObserver.unobserve(entry.target);
+          });
+        }, { rootMargin: '220px 0px' });
+      }
+
+      function observeLazyMedia(container) {
+        if (!container) return;
+        const nodes = container.querySelectorAll('[data-lazy-bird]');
+        if (!mediaObserver) {
+          nodes.forEach(function (n, idx) {
+            if (idx < 16) {
+              const b = BIRD_BY_ID[Number(n.getAttribute('data-lazy-bird'))];
+              if (b) enqueuePhotoLoad(b, false);
+            }
+          });
+          return;
+        }
+        nodes.forEach(function (n) {
+          const b = BIRD_BY_ID[Number(n.getAttribute('data-lazy-bird'))];
+          if (b && !photoCacheBySci[b.sci]) {
+            mediaObserver.observe(n);
+          }
+        });
+      }
+
+      function renderBirdMediaInner(bird, opts) {
+        const o = opts || {};
+        const cached = photoCacheBySci[bird.sci];
+
+        if (cached && cached.status === 'loaded' && cached.url) {
+          const imgSrc = escapeHtml(o.clickableZoom ? (cached.fullUrl || cached.url) : cached.url);
+          const zoomBtn = o.clickableZoom
+            ? '<button type="button" class="zoom-hint-btn" onclick="event.stopPropagation(); BirdApp.openLightbox(' + bird.id + ')">🔍 放大檢視</button>'
+            : '';
+          const caption = !o.compact
+            ? '<span class="media-caption-badge">📷 ' + escapeHtml(cached.sourceLabel) + '</span>'
+            : '';
+          return '<div class="media-slot photo-shimmer">' +
+            '<img src="' + imgSrc + '" alt="' + escapeHtml(bird.name) + ' 野生生態照" loading="lazy" decoding="async" referrerpolicy="no-referrer" ' +
+            'onload="this.classList.remove(\'is-loading\'); if(this.parentElement) this.parentElement.classList.remove(\'photo-shimmer\');" ' +
+            'onerror="BirdApp.handlePhotoError(\'' + escapeHtml(bird.sci) + '\')" ' +
+            'class="bird-real-photo is-loading" />' +
+            caption + zoomBtn +
+            '</div>';
+        }
+
+        const isOffline = cached && cached.status === 'offline';
+        const caption = !o.compact
+          ? '<span class="media-caption-badge">' + (isOffline ? '🎨 離線棲地剪影' : '⏳ 載入生態照...') + '</span>'
+          : '';
+        return '<div class="media-slot ' + (isOffline ? '' : 'photo-shimmer') + '">' +
+          getHabitatSVG(bird.habitat) + caption +
+          '</div>';
+      }
+
+      /* =========================================================
+         5. 狀態管理與 localStorage 持久化
+         ========================================================= */
+      const STORAGE_KEY = 'tw_bird100_native_v1';
+      let currentDetailId = null;
+      let detailUseBackupYt = false;
+
+      const appState = {
+        activeTab: 'guide',
+        darkMode: false,
+        activeFilter: 'all',
+        keyword: '',
+        expandedYtCardId: null,
+        logHabitat: 'all',
+        logStatus: 'all',
+        logKeyword: '',
+        expandedLogId: null,
+        pendingClearLogId: null,
+        pendingClearAllLogs: false,
+        logs: {},
+        quiz: {
+          pool: 'seen',     // 'seen'（預設：已看過的野鳥） | 'all'（全圖鑑練習）
+          mode: 'feature',  // 'feature'（預設：看特徵猜鳥名） | 'photo'（看照片辨識鳥種）
+          scope: 'all',     // 僅 pool === 'all' 時適用：all | urban | field | wetland | forest
+          currentBird: null,
+          options: [],
+          answered: false,
+          correctCount: 0,
+          totalAnswered: 0,
+          streak: 0,
+          bestStreak: 0
+        }
+      };
+
+      function getLog(birdId) {
+        return appState.logs[birdId] || { seen: false, heard: false, date: '', place: '', note: '' };
+      }
+
+      function getSeenBirds() {
+        return BIRDS.filter(function (b) { return !!getLog(b.id).seen; });
+      }
+
+      function loadSavedData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (parsed.logs && typeof parsed.logs === 'object') appState.logs = parsed.logs;
+          if (typeof parsed.darkMode === 'boolean') appState.darkMode = parsed.darkMode;
+          if (typeof parsed.bestStreak === 'number') appState.quiz.bestStreak = parsed.bestStreak;
+        } catch (e) {}
+      }
+
+      function saveData(silent) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            logs: appState.logs,
+            darkMode: appState.darkMode,
+            bestStreak: appState.quiz.bestStreak
+          }));
+          if (!silent) showToast('已自動儲存觀察紀錄 📒');
+        } catch (e) {}
+        updateLogSummaryUI();
+      }
+
+      /* =========================================================
+         6. 分頁一：圖鑑探索渲染與單一 YouTube 展開
+         ========================================================= */
+      function getFilteredBirds() {
+        const f = appState.activeFilter;
+        const kw = (appState.keyword || '').trim().toLowerCase();
+
+        return BIRDS.filter(function (b) {
+          if (f === 'urban' || f === 'field' || f === 'wetland' || f === 'forest') {
+            if (b.habitat !== f) return false;
+          } else if (f === 'endemic') {
+            if (b.tags.indexOf('台灣特有種') === -1) return false;
+          } else if (f === 'migrant') {
+            if (b.tags.indexOf('冬候鳥') === -1 && b.tags.indexOf('過境鳥') === -1) return false;
+          } else if (f === 'seen') {
+            if (!getLog(b.id).seen) return false;
+          }
+
+          if (kw) {
+            const hay = [
+              '#' + b.id, String(b.id), b.name, b.en, b.sci,
+              b.features, b.habitatDesc, b.callText,
+              HABITAT_META[b.habitat].short, b.tags.join(' ')
+            ].join(' ').toLowerCase();
+            if (hay.indexOf(kw) === -1) return false;
+          }
+          return true;
+        });
+      }
+
+      function collapseAllCardYouTube() {
+        if (!appState.expandedYtCardId) return;
+        const prevId = appState.expandedYtCardId;
+        appState.expandedYtCardId = null;
+
+        const slot = byId('card-yt-slot-' + prevId);
+        if (slot) {
+          const iframe = slot.querySelector('iframe');
+          if (iframe) iframe.src = 'about:blank';
+          slot.innerHTML = '';
+          slot.classList.add('hidden');
+        }
+        const btn = byId('btn-card-yt-' + prevId);
+        if (btn) {
+          btn.innerHTML = '<span>🎬</span><span>聽真實叫聲</span>';
+          btn.classList.remove('is-open');
+        }
+      }
+
+      function toggleCardYouTube(e, birdId) {
+        if (e) e.stopPropagation();
+        const bird = BIRD_BY_ID[birdId];
+        if (!bird || !bird.verifiedYT) return;
+
+        if (appState.expandedYtCardId === birdId) {
+          collapseAllCardYouTube();
+          return;
+        }
+
+        collapseAllCardYouTube();
+        appState.expandedYtCardId = birdId;
+
+        const slot = byId('card-yt-slot-' + birdId);
+        const btn = byId('btn-card-yt-' + birdId);
+        if (slot) {
+          slot.classList.remove('hidden');
+          slot.innerHTML =
+            '<div class="yt-inline-wrap">' +
+              '<div class="yt-frame-box">' +
+                '<iframe class="yt-embed-frame" src="' + buildYouTubeEmbedUrl(bird.verifiedYT.primary, false) + '" ' +
+                'title="' + escapeHtml(bird.name) + ' 真實野外叫聲" loading="lazy" ' +
+                'referrerpolicy="strict-origin-when-cross-origin" ' +
+                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
+              '</div>' +
+              '<div class="yt-inline-bar">' +
+                '<span>🎬 ' + escapeHtml(bird.name) + ' 台灣野外實錄</span>' +
+                '<button type="button" onclick="BirdApp.toggleCardYouTube(event, ' + bird.id + ')" style="font-weight:800; color:var(--forest-700);">收合影片 ▲</button>' +
+              '</div>' +
+            '</div>';
+        }
+        if (btn) {
+          btn.innerHTML = '<span>⏹️</span><span>收合真實影片</span>';
+          btn.classList.add('is-open');
+        }
+      }
+
+      function renderTagBadges(bird) {
+        let html = '<span class="pill-tag pill-habitat">' + HABITAT_META[bird.habitat].short + '</span>';
+        bird.tags.forEach(function (tag) {
+          if (tag === '台灣特有種') {
+            html = '<span class="pill-tag pill-endemic">★ 特有種</span>' + html;
+          } else if (tag === '冬候鳥' || tag === '夏候鳥' || tag === '過境鳥') {
+            html += '<span class="pill-tag pill-migrant">' + escapeHtml(tag) + '</span>';
+          } else if (tag === '外來種') {
+            html += '<span class="pill-tag pill-alien">外來種</span>';
+          }
+        });
+        return html;
+      }
+
+      function renderBirdGrid() {
+        const grid = byId('bird-grid');
+        const empty = byId('empty-state');
+        const countEl = byId('guide-result-count');
+        if (!grid || !empty) return;
+
+        appState.expandedYtCardId = null;
+        const list = getFilteredBirds();
+        if (countEl) countEl.textContent = '顯示 ' + list.length + ' / ' + BIRDS.length + ' 種';
+
+        if (list.length === 0) {
+          grid.innerHTML = '';
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        grid.innerHTML = list.map(function (bird) {
+          const log = getLog(bird.id);
+          const audioButtons = bird.verifiedYT
+            ? '<button id="btn-card-yt-' + bird.id + '" type="button" class="btn-solid flex-1" onclick="BirdApp.toggleCardYouTube(event, ' + bird.id + ')"><span>🎬</span><span>聽真實叫聲</span></button>'
+            : '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-solid flex-1"><span>🎬</span><span>YouTube 真實鳥音</span></a>' +
+              '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-outline"><span>🎵</span><span>Xeno-canto</span></a>';
+
+          return '<article class="bird-card" onclick="BirdApp.openDetailModal(' + bird.id + ')">' +
+            '<div class="card-media" data-lazy-bird="' + bird.id + '">' +
+              '<div id="card-media-' + bird.id + '" class="media-slot">' + renderBirdMediaInner(bird, { compact: false, clickableZoom: false }) + '</div>' +
+              '<span class="card-num-badge">#' + bird.id + '</span>' +
+              '<div class="card-top-badges">' + renderTagBadges(bird) + '</div>' +
+            '</div>' +
+            '<div class="card-body">' +
+              '<div style="display:flex; flex-direction:column; gap:10px;">' +
+                '<div class="card-head-row">' +
+                  '<div>' +
+                    '<h3 class="bird-name">' + escapeHtml(bird.name) + '</h3>' +
+                    '<p class="bird-sci">' + escapeHtml(bird.en) + ' · <em>' + escapeHtml(bird.sci) + '</em></p>' +
+                  '</div>' +
+                  '<span class="size-pill">' + escapeHtml(bird.size) + '</span>' +
+                '</div>' +
+                '<div class="audio-box" onclick="event.stopPropagation()">' +
+                  '<div class="audio-btn-row">' + audioButtons + '</div>' +
+                  '<p class="call-text">🎵 口訣：' + escapeHtml(bird.callText) + '</p>' +
+                  (bird.verifiedYT ? '<div id="card-yt-slot-' + bird.id + '" class="hidden"></div>' : '') +
+                '</div>' +
+                '<div class="card-desc">' +
+                  '<p><strong>外觀：</strong>' + escapeHtml(bird.features) + '</p>' +
+                  '<p><strong>棲地：</strong>' + escapeHtml(bird.habitatDesc) + '</p>' +
+                '</div>' +
+              '</div>' +
+                '<div class="card-footer" onclick="event.stopPropagation()">' +
+                '<div class="mini-log-btns">' +
+                  '<button type="button" class="mini-log-btn ' + (log.seen ? 'active-seen' : '') + '" onclick="BirdApp.quickToggleLog(event, ' + bird.id + ', \'seen\')">' + (log.seen ? '✅ 已看過' : '👀 標記看過') + '</button>' +
+                  '<button type="button" class="mini-log-btn ' + (log.heard ? 'active-heard' : '') + '" onclick="BirdApp.quickToggleLog(event, ' + bird.id + ', \'heard\')">👂 ' + (log.heard ? '已聽過' : '聽過') + '</button>' +
+                '</div>' +
+                '<button type="button" class="detail-link-btn" onclick="BirdApp.openDetailModal(' + bird.id + ')">詳情 ➡️</button>' +
+              '</div>' +
+            '</div>' +
+          '</article>';
+        }).join('');
+
+        observeLazyMedia(grid);
+      }
+
+      /* =========================================================
+         7. 詳情 Modal 與全螢幕大圖 Lightbox
+         ========================================================= */
+      function openDetailModal(birdId) {
+        const bird = BIRD_BY_ID[birdId];
+        if (!bird) return;
+
+        collapseAllCardYouTube();
+        enqueuePhotoLoad(bird, true);
+
+        currentDetailId = birdId;
+        detailUseBackupYt = false;
+        renderDetailModal();
+
+        const modal = byId('detail-modal');
+        if (modal) modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDetailModal() {
+        const iframe = byId('detail-yt-iframe');
+        if (iframe) iframe.src = 'about:blank';
+        const content = byId('detail-content');
+        if (content) content.innerHTML = '';
+
+        currentDetailId = null;
+        detailUseBackupYt = false;
+
+        const modal = byId('detail-modal');
+        if (modal) modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      function toggleDetailBackupYt() {
+        if (!currentDetailId) return;
+        const bird = BIRD_BY_ID[currentDetailId];
+        if (!bird || !bird.verifiedYT) return;
+
+        detailUseBackupYt = !detailUseBackupYt;
+        const ytId = detailUseBackupYt ? bird.verifiedYT.backup : bird.verifiedYT.primary;
+
+        const iframe = byId('detail-yt-iframe');
+        const label = byId('detail-yt-label');
+        const btn = byId('btn-detail-yt-switch');
+        const ext = byId('detail-yt-external');
+
+        if (iframe) iframe.src = buildYouTubeEmbedUrl(ytId, false);
+        if (label) label.textContent = detailUseBackupYt ? '備用台灣野外錄音' : '主要台灣野外錄音';
+        if (btn) btn.innerHTML = '<span>🔄</span><span>' + (detailUseBackupYt ? '切回主要錄音' : '切換備用錄音') + '</span>';
+        if (ext) ext.href = 'https://www.youtube.com/watch?v=' + encodeURIComponent(ytId);
+
+        showToast(detailUseBackupYt ? '已切換至備用野外錄音 🎬' : '已切回主要野外錄音 🎬');
+      }
+
+      function renderDetailModal() {
+        const content = byId('detail-content');
+        if (!currentDetailId || !content) return;
+        const bird = BIRD_BY_ID[currentDetailId];
+        if (!bird) return;
+
+        const log = getLog(bird.id);
+        const ytId = bird.verifiedYT ? (detailUseBackupYt ? bird.verifiedYT.backup : bird.verifiedYT.primary) : null;
+
+        let audioSectionHtml = '';
+        if (bird.verifiedYT) {
+          audioSectionHtml =
+            '<div class="audio-box" style="padding:14px; gap:10px;">' +
+              '<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px;">' +
+                '<strong style="font-size:0.9rem;">🎬 真實野外錄音（YouTube）</strong>' +
+                '<span id="detail-yt-label" style="font-size:0.74rem; color:var(--text-muted); font-weight:700;">' + (detailUseBackupYt ? '備用台灣野外錄音' : '主要台灣野外錄音') + '</span>' +
+              '</div>' +
+              '<div class="yt-frame-box">' +
+                '<iframe id="detail-yt-iframe" class="yt-embed-frame" src="' + buildYouTubeEmbedUrl(ytId, false) + '" ' +
+                'title="' + escapeHtml(bird.name) + ' 野外實錄" referrerpolicy="strict-origin-when-cross-origin" ' +
+                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
+              '</div>' +
+              '<div class="audio-btn-row">' +
+                '<button id="btn-detail-yt-switch" type="button" class="btn-solid" onclick="BirdApp.toggleDetailBackupYt()"><span>🔄</span><span>' + (detailUseBackupYt ? '切回主要錄音' : '切換備用錄音') + '</span></button>' +
+                '<a id="detail-yt-external" href="https://www.youtube.com/watch?v=' + encodeURIComponent(ytId) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>↗</span><span>在 YouTube 開啟</span></a>' +
+                '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-outline"><span>🎵</span><span>Xeno-canto 鳥音庫</span></a>' +
+              '</div>' +
+              '<p class="call-text">💡 叫聲記憶口訣：' + escapeHtml(bird.callText) + '</p>' +
+            '</div>';
+        } else {
+          audioSectionHtml =
+            '<div class="audio-box" style="padding:14px; gap:10px;">' +
+              '<strong style="font-size:0.9rem;">🎬 真實野外鳥音收聽</strong>' +
+              '<div class="audio-btn-row">' +
+                '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>🎬</span><span>YouTube 真實鳥音</span></a>' +
+                '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-solid"><span>🎵</span><span>Xeno-canto 鳥音庫</span></a>' +
+              '</div>' +
+              '<p class="call-text">💡 叫聲記憶口訣：' + escapeHtml(bird.callText) + '</p>' +
+            '</div>';
+        }
+
+        content.innerHTML =
+          '<div class="detail-hero-photo" onclick="BirdApp.openLightbox(' + bird.id + ')">' +
+            '<div id="detail-media-slot" class="media-slot">' + renderBirdMediaInner(bird, { compact: false, clickableZoom: true }) + '</div>' +
+          '</div>' +
+          '<div style="display:flex; flex-direction:column; gap:8px;">' +
+            '<div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">' +
+              '<span class="size-pill" style="font-weight:800;">#' + bird.id + '</span>' +
+              renderTagBadges(bird) +
+              '<span class="size-pill">體長 ' + escapeHtml(bird.size) + '</span>' +
+            '</div>' +
+            '<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<h2 style="margin:0; font-size:1.5rem; font-weight:900;">' + escapeHtml(bird.name) + '</h2>' +
+                '<p style="margin:2px 0 0; font-size:0.82rem; color:var(--text-muted);">' + escapeHtml(bird.en) + ' · <em>' + escapeHtml(bird.sci) + '</em></p>' +
+              '</div>' +
+              '<div class="mini-log-btns">' +
+                '<button type="button" class="mini-log-btn ' + (log.seen ? 'active-seen' : '') + '" style="padding:7px 12px; font-size:0.78rem;" onclick="BirdApp.quickToggleLog(event, ' + bird.id + ', \'seen\')">' + (log.seen ? '✅ 已看過' : '👀 標記看過') + '</button>' +
+                '<button type="button" class="mini-log-btn ' + (log.heard ? 'active-heard' : '') + '" style="padding:7px 12px; font-size:0.78rem;" onclick="BirdApp.quickToggleLog(event, ' + bird.id + ', \'heard\')">👂 ' + (log.heard ? '曾聽過 ✓' : '標記聽過') + '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          audioSectionHtml +
+          '<div class="detail-info-grid">' +
+            '<div class="info-subcard"><h4>🪶 外觀特徵</h4><p>' + escapeHtml(bird.features) + '</p></div>' +
+            '<div class="info-subcard"><h4>🌿 棲地與行為</h4><p>' + escapeHtml(bird.habitatDesc) + '</p></div>' +
+          '</div>';
+      }
+
+      function openLightbox(birdId) {
+        const bird = BIRD_BY_ID[birdId];
+        if (!bird) return;
+        const cached = photoCacheBySci[bird.sci];
+        if (!cached || cached.status !== 'loaded' || !cached.url) return;
+
+        const img = byId('lightbox-img');
+        const title = byId('lightbox-title');
+        const credit = byId('lightbox-credit');
+        const modal = byId('lightbox-modal');
+        if (!img || !modal) return;
+
+        img.src = cached.fullUrl || cached.url;
+        img.alt = bird.name + ' 真實生態大圖';
+        if (title) title.textContent = '#' + bird.id + ' ' + bird.name + '（' + bird.en + ' / ' + bird.sci + '）';
+        if (credit) credit.textContent = '照片來源：' + cached.sourceLabel + '（點擊背景或右上角 ✕ 關閉）';
+        modal.classList.remove('hidden');
+      }
+
+      function closeLightbox() {
+        const modal = byId('lightbox-modal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      /* =========================================================
+         8. 分頁二：賞鳥特徵識別挑戰（已看過的野鳥 + 全圖鑑練習）
+         ========================================================= */
+      function sanitizeClue(text, bird) {
+        if (!text || !bird) return '';
+        let out = String(text);
+        // 移除括號內可能提及其他同種異名或編號的爆雷註記
+        out = out.replace(/（(?:與|亦稱)\s*#\d+[^）]*）/g, '');
+        // 將線索中出現的鳥名替換為「牠」
+        if (bird.name) {
+          const escaped = bird.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          out = out.replace(new RegExp(escaped, 'g'), '牠');
+        }
+        return out.trim();
+      }
+
+      function updateQuizScoreUI() {
+        const st = byId('quiz-streak');
+        const acc = byId('quiz-accuracy');
+        const best = byId('quiz-best');
+        if (st) st.textContent = appState.quiz.streak + ' 🔥';
+        if (acc) acc.textContent = appState.quiz.correctCount + ' / ' + appState.quiz.totalAnswered;
+        if (best) best.textContent = appState.quiz.bestStreak + ' 🏆';
+      }
+
+      function syncQuizHeaderControls() {
+        const seenCount = getSeenBirds().length;
+        const poolSeenLabel = byId('pool-seen-label');
+        if (poolSeenLabel) poolSeenLabel.textContent = '已看過的野鳥 (' + seenCount + ' 種)';
+
+        const btnPoolSeen = byId('btn-pool-seen');
+        const btnPoolAll = byId('btn-pool-all');
+        const scopeBar = byId('quiz-scope-bar');
+        if (btnPoolSeen) btnPoolSeen.classList.toggle('active', appState.quiz.pool === 'seen');
+        if (btnPoolAll) btnPoolAll.classList.toggle('active', appState.quiz.pool === 'all');
+        if (scopeBar) scopeBar.classList.toggle('hidden', appState.quiz.pool !== 'all');
+
+        const btnFeature = byId('btn-mode-feature');
+        const btnPhoto = byId('btn-mode-photo');
+        const zoneFeature = byId('quiz-feature-zone');
+        const zonePhoto = byId('quiz-photo-zone');
+        if (btnFeature) btnFeature.classList.toggle('active', appState.quiz.mode === 'feature');
+        if (btnPhoto) btnPhoto.classList.toggle('active', appState.quiz.mode === 'photo');
+        if (zoneFeature) zoneFeature.classList.toggle('hidden', appState.quiz.mode !== 'feature');
+        if (zonePhoto) zonePhoto.classList.toggle('hidden', appState.quiz.mode !== 'photo');
+
+        const scopeChips = byId('quiz-scope-chips');
+        if (scopeChips) {
+          scopeChips.querySelectorAll('button[data-scope]').forEach(function (b) {
+            b.classList.toggle('active', b.getAttribute('data-scope') === appState.quiz.scope);
+          });
+        }
+      }
+
+      function setQuizPool(pool) {
+        appState.quiz.pool = pool;
+        syncQuizHeaderControls();
+        renderQuizView(true);
+      }
+
+      function setQuizMode(mode) {
+        if (appState.quiz.mode === mode) return;
+        appState.quiz.mode = mode;
+        syncQuizHeaderControls();
+        renderQuizView(true);
+      }
+
+      function setQuizScope(scope) {
+        if (appState.quiz.scope === scope) return;
+        appState.quiz.scope = scope;
+        syncQuizHeaderControls();
+        renderQuizView(true);
+      }
+
+      function renderQuizView(forceNewRound) {
+        syncQuizHeaderControls();
+        updateQuizScoreUI();
+
+        const emptyBox = byId('quiz-empty-seen');
+        const activeArea = byId('quiz-active-area');
+        const seenBirds = getSeenBirds();
+
+        if (appState.quiz.pool === 'seen' && seenBirds.length === 0) {
+          if (emptyBox) emptyBox.classList.remove('hidden');
+          if (activeArea) activeArea.classList.add('hidden');
+          appState.quiz.currentBird = null;
+          return;
+        }
+
+        if (emptyBox) emptyBox.classList.add('hidden');
+        if (activeArea) activeArea.classList.remove('hidden');
+
+        // 檢查現有題目是否仍符合目前題庫
+        const cur = appState.quiz.currentBird;
+        let needNew = !!forceNewRound || !cur;
+        if (!needNew && appState.quiz.pool === 'seen' && !getLog(cur.id).seen) {
+          needNew = true;
+        }
+        if (!needNew && appState.quiz.pool === 'all' && appState.quiz.scope !== 'all' && cur.habitat !== appState.quiz.scope) {
+          needNew = true;
+        }
+
+        if (needNew) {
+          startQuizRound();
+        } else if (appState.quiz.mode === 'photo') {
+          renderQuizPhotoStage();
+        } else {
+          renderQuizFeatureStage();
+        }
+      }
+
+      function startQuizRound() {
+        const seenBirds = getSeenBirds();
+        const noticeEl = byId('quiz-few-seen-notice');
+        let answerPool = [];
+        let distractorCandidates = [];
+
+        if (appState.quiz.pool === 'seen') {
+          if (seenBirds.length === 0) {
+            renderQuizView(false);
+            return;
+          }
+          answerPool = seenBirds;
+          if (noticeEl) {
+            if (seenBirds.length <= 3) {
+              noticeEl.textContent = '💡 目前已標記 ' + seenBirds.length + ' 種看過的野鳥，干擾選項已自動從同棲地其他野鳥補足；多勾選幾種會更有挑戰性喔！';
+              noticeEl.classList.remove('hidden');
+            } else {
+              noticeEl.classList.add('hidden');
+            }
+          }
+        } else {
+          if (noticeEl) noticeEl.classList.add('hidden');
+          answerPool = appState.quiz.scope === 'all'
+            ? BIRDS
+            : BIRDS.filter(function (b) { return b.habitat === appState.quiz.scope; });
+        }
+
+        const prevId = appState.quiz.currentBird ? appState.quiz.currentBird.id : null;
+        const candidates = answerPool.length > 1
+          ? answerPool.filter(function (b) { return b.id !== prevId; })
+          : answerPool;
+        const target = candidates[Math.floor(Math.random() * candidates.length)] || answerPool[0];
+
+        // 組合 3 個干擾選項（排除同拉丁學名以避免同種異名混淆）
+        const picked = [];
+        const usedSci = new Set([target.sci]);
+
+        function takeFrom(list, maxNeed) {
+          const shuffled = list.slice().sort(function () { return Math.random() - 0.5; });
+          for (let i = 0; i < shuffled.length && picked.length < maxNeed; i++) {
+            const b = shuffled[i];
+            if (b.id !== target.id && !usedSci.has(b.sci)) {
+              usedSci.add(b.sci);
+              picked.push(b);
+            }
+          }
+        }
+
+        if (appState.quiz.pool === 'seen') {
+          const otherSeen = seenBirds.filter(function (b) { return b.id !== target.id; });
+          const sameHab = BIRDS.filter(function (b) { return b.habitat === target.habitat && b.id !== target.id; });
+          if (seenBirds.length >= 4) {
+            // 滿 4 種以上：優先混合已看過野鳥（最多 2 隻）與同棲地野鳥
+            takeFrom(otherSeen, 2);
+            takeFrom(sameHab, 3);
+            takeFrom(otherSeen, 3);
+          } else {
+            // 1~3 種：先取其他已看過，再用同棲地野鳥補足
+            takeFrom(otherSeen, 3);
+            takeFrom(sameHab, 3);
+          }
+          takeFrom(BIRDS, 3);
+        } else {
+          distractorCandidates = answerPool.filter(function (b) { return b.id !== target.id; });
+          takeFrom(distractorCandidates, 3);
+          takeFrom(BIRDS, 3);
+        }
+
+        const options = [target].concat(picked).sort(function () { return Math.random() - 0.5; });
+
+        appState.quiz.currentBird = target;
+        appState.quiz.options = options;
+        appState.quiz.answered = false;
+
+        enqueuePhotoLoad(target, true);
+
+        const hFeat = byId('quiz-hint-text-feature');
+        const hPhoto = byId('quiz-hint-text-photo');
+        const fb = byId('quiz-feedback');
+        if (hFeat) hFeat.classList.add('hidden');
+        if (hPhoto) hPhoto.classList.add('hidden');
+        if (fb) fb.classList.add('hidden');
+
+        updateQuizScoreUI();
+        renderQuizOptions();
+
+        if (appState.quiz.mode === 'feature') {
+          renderQuizFeatureStage();
+        } else {
+          renderQuizPhotoStage();
+        }
+      }
+
+      function renderQuizFeatureStage() {
+        const target = appState.quiz.currentBird;
+        if (!target) return;
+
+        const metaEl = byId('quiz-clue-meta');
+        const featEl = byId('quiz-clue-features');
+        const habEl = byId('quiz-clue-habitat');
+
+        if (metaEl) {
+          let pills = '<span class="clue-meta-pill">' + HABITAT_META[target.habitat].label + '</span>' +
+            '<span class="clue-meta-pill">📏 體長 ' + escapeHtml(target.size) + '</span>';
+          target.tags.forEach(function (tag) {
+            if (tag === '台灣特有種') {
+              pills += '<span class="clue-meta-pill" style="background:rgba(230,159,56,0.28); border-color:rgba(230,159,56,0.6); color:#f9d696;">★ 台灣特有種</span>';
+            } else {
+              pills += '<span class="clue-meta-pill">' + escapeHtml(tag) + '</span>';
+            }
+          });
+          metaEl.innerHTML = pills;
+        }
+        if (featEl) featEl.textContent = sanitizeClue(target.features, target);
+        if (habEl) habEl.textContent = sanitizeClue(target.habitatDesc, target);
+      }
+
+      function renderQuizPhotoStage() {
+        const target = appState.quiz.currentBird;
+        const stage = byId('quiz-photo-stage');
+        const badge = byId('quiz-photo-badge');
+        if (!target || !stage) return;
+
+        if (badge) {
+          badge.textContent = '📷 棲地線索：' + HABITAT_META[target.habitat].label + ' · 體長 ' + target.size;
+        }
+
+        const cached = photoCacheBySci[target.sci];
+        if (cached && cached.status === 'loaded' && cached.url) {
+          stage.innerHTML =
+            '<div class="media-slot photo-shimmer">' +
+              '<img src="' + escapeHtml(cached.fullUrl || cached.url) + '" alt="待辨識的台灣野鳥" decoding="async" referrerpolicy="no-referrer" ' +
+              'onload="this.classList.remove(\'is-loading\'); if(this.parentElement) this.parentElement.classList.remove(\'photo-shimmer\');" ' +
+              'onerror="BirdApp.handlePhotoError(\'' + escapeHtml(target.sci) + '\')" ' +
+              'class="bird-real-photo is-loading" />' +
+            '</div>';
+        } else if (cached && cached.status === 'offline') {
+          stage.innerHTML =
+            '<div class="media-slot">' + getHabitatSVG(target.habitat) +
+              '<span class="media-caption-badge">目前為離線模式，請點右上角「查看外觀特徵提示」作答</span>' +
+            '</div>';
+        } else {
+          stage.innerHTML =
+            '<div class="media-slot photo-shimmer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#faf8f2;">' +
+              '<span style="font-size:1.6rem;">📷</span>' +
+              '<span style="font-size:0.8rem; font-weight:700;">正在載入真實野生生態照...</span>' +
+            '</div>';
+        }
+      }
+
+      function renderQuizOptions() {
+        const container = byId('quiz-options');
+        if (!container) return;
+        container.innerHTML = appState.quiz.options.map(function (bird) {
+          const isSeen = !!getLog(bird.id).seen;
+          return '<button type="button" id="quiz-opt-' + bird.id + '" class="quiz-opt-btn" onclick="BirdApp.submitQuizAnswer(' + bird.id + ')">' +
+            '<div class="opt-avatar">' + (isSeen ? '👀' : '🐦') + '</div>' +
+            '<div>' +
+              '<div style="font-weight:900; font-size:0.95rem;">' + escapeHtml(bird.name) + '</div>' +
+              '<div style="font-size:0.74rem; color:var(--text-muted);">' + HABITAT_META[bird.habitat].short + ' · ' + escapeHtml(bird.size) + '</div>' +
+            '</div>' +
+          '</button>';
+        }).join('');
+      }
+
+      function updateQuizRevealPhoto() {
+        const target = appState.quiz.currentBird;
+        const wrap = byId('quiz-reveal-photo');
+        if (!target || !wrap) return;
+        wrap.innerHTML = renderBirdMediaInner(target, { compact: true, clickableZoom: false });
+        wrap.onclick = function () { openLightbox(target.id); };
+      }
+
+      function submitQuizAnswer(selectedId) {
+        if (appState.quiz.answered || !appState.quiz.currentBird) return;
+        appState.quiz.answered = true;
+        appState.quiz.totalAnswered += 1;
+
+        const target = appState.quiz.currentBird;
+        const isCorrect = selectedId === target.id;
+
+        if (isCorrect) {
+          appState.quiz.correctCount += 1;
+          appState.quiz.streak += 1;
+          if (appState.quiz.streak > appState.quiz.bestStreak) {
+            appState.quiz.bestStreak = appState.quiz.streak;
+          }
+          saveData(true);
+        } else {
+          appState.quiz.streak = 0;
+        }
+        updateQuizScoreUI();
+
+        appState.quiz.options.forEach(function (bird) {
+          const btn = byId('quiz-opt-' + bird.id);
+          if (!btn) return;
+          btn.disabled = true;
+          if (bird.id === target.id) {
+            btn.classList.add('is-correct');
+          } else if (bird.id === selectedId && !isCorrect) {
+            btn.classList.add('is-wrong');
+          } else {
+            btn.classList.add('is-dim');
+          }
+        });
+
+        const fb = byId('quiz-feedback');
+        const title = byId('quiz-feedback-title');
+        const desc = byId('quiz-feedback-desc');
+        const personalEl = byId('quiz-personal-record');
+        if (!fb || !title || !desc) return;
+
+        fb.classList.remove('hidden', 'ok', 'miss');
+        fb.classList.add(isCorrect ? 'ok' : 'miss');
+        title.textContent = isCorrect
+          ? '🎉 答對了！這就是「' + target.name + '」！'
+          : '🐦 差一點點！正確答案是「' + target.name + '」';
+        desc.innerHTML =
+          '<strong>🪶 外觀特徵重點：</strong>' + escapeHtml(target.features) + '<br/>' +
+          '<strong>🎵 叫聲口訣：</strong>' + escapeHtml(target.callText);
+
+        // 溫馨顯示個人目擊紀錄與親子觀察筆記
+        if (personalEl) {
+          const log = getLog(target.id);
+          if (log.seen && (log.date || log.place || log.note)) {
+            let parts = [];
+            if (log.date) parts.push('📅 ' + escapeHtml(log.date));
+            if (log.place) parts.push('📍 ' + escapeHtml(log.place));
+            personalEl.innerHTML =
+              '<strong>✨ 你們的觀察回憶：</strong>' +
+              (parts.length ? parts.join(' · ') : '已標記親眼看過') +
+              (log.note ? '<div style="margin-top:3px; color:var(--text-muted);">📝 ' + escapeHtml(log.note) + '</div>' : '');
+            personalEl.classList.remove('hidden');
+          } else {
+            personalEl.classList.add('hidden');
+          }
+        }
+
+        updateQuizRevealPhoto();
+      }
+
+      /* =========================================================
+         9. 分頁三：觀察紀錄簿（以已看過進度為核心＋四大棲地進度）
+         ========================================================= */
+      function updateLogSummaryUI() {
+        let seenCount = 0;
+        let heardCount = 0;
+        const habSeenCounts = { urban: 0, field: 0, wetland: 0, forest: 0 };
+
+        BIRDS.forEach(function (b) {
+          const l = getLog(b.id);
+          if (l.seen) {
+            seenCount++;
+            habSeenCounts[b.habitat]++;
+          }
+          if (l.heard) heardCount++;
+        });
+
+        const pct = Math.round((seenCount / BIRDS.length) * 100);
+        const badge = byId('log-count-badge');
+        const chipSeen = byId('chip-filter-seen');
+        const poolSeenLabel = byId('pool-seen-label');
+        const sSeen = byId('stat-seen');
+        const sHeard = byId('stat-heard');
+        const sTotal = byId('stat-total-text');
+        const sBar = byId('stat-total-bar');
+
+        if (badge) badge.textContent = seenCount + '/' + BIRDS.length;
+        if (chipSeen) chipSeen.textContent = '👀 已看過 (' + seenCount + ')';
+        if (poolSeenLabel) poolSeenLabel.textContent = '已看過的野鳥 (' + seenCount + ' 種)';
+        if (sSeen) sSeen.textContent = seenCount + ' / ' + BIRDS.length;
+        if (sHeard) sHeard.textContent = heardCount + ' / ' + BIRDS.length;
+        if (sTotal) sTotal.textContent = '已看過 ' + seenCount + ' / ' + BIRDS.length + ' (' + pct + '%)';
+        if (sBar) sBar.style.width = pct + '%';
+
+        const grid = byId('habitat-progress-grid');
+        if (grid) {
+          grid.innerHTML = ['urban', 'field', 'wetland', 'forest'].map(function (key) {
+            const meta = HABITAT_META[key];
+            const val = habSeenCounts[key];
+            const hpct = Math.round((val / meta.total) * 100);
+            return '<div class="hab-stat-card">' +
+              '<div style="display:flex; justify-content:space-between; font-size:0.76rem; font-weight:800;">' +
+                '<span>' + meta.label + '</span>' +
+                '<span>' + val + '/' + meta.total + '</span>' +
+              '</div>' +
+              '<div class="progress-track" style="height:7px;">' +
+                '<div class="progress-fill" style="width:' + hpct + '%;"></div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+
+        renderClearAllControl();
+      }
+
+      function renderClearAllControl() {
+        const wrap = byId('clear-all-wrap');
+        if (!wrap) return;
+        if (appState.pendingClearAllLogs) {
+          wrap.innerHTML =
+            '<span style="font-size:0.75rem; font-weight:800; color:var(--red-600);">確定清除全部紀錄？</span>' +
+            '<button type="button" class="btn-danger-solid" onclick="BirdApp.confirmClearAllLogs()">確定清除</button>' +
+            '<button type="button" class="btn-outline" onclick="BirdApp.cancelClearAllLogs()">取消</button>';
+        } else {
+          wrap.innerHTML =
+            '<button type="button" class="btn-danger-soft" onclick="BirdApp.requestClearAllLogs()">🗑️ 清除所有紀錄</button>';
+        }
+      }
+
+      function renderLogList() {
+        const container = byId('log-list');
+        if (!container) return;
+
+        const kw = (appState.logKeyword || '').trim().toLowerCase();
+        const filtered = BIRDS.filter(function (b) {
+          if (appState.logHabitat !== 'all' && b.habitat !== appState.logHabitat) return false;
+          const l = getLog(b.id);
+          if (appState.logStatus === 'seen' && !l.seen) return false;
+          if (appState.logStatus === 'unseen' && l.seen) return false;
+          if (kw) {
+            const hay = ('#' + b.id + ' ' + b.name + ' ' + b.en + ' ' + l.place + ' ' + l.note).toLowerCase();
+            if (hay.indexOf(kw) === -1) return false;
+          }
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">目前條件沒有符合的觀察紀錄喔！</div>';
+          updateLogSummaryUI();
+          return;
+        }
+
+        container.innerHTML = filtered.map(function (bird) {
+          const log = getLog(bird.id);
+          const isSeen = !!log.seen;
+          const isExpanded = appState.expandedLogId === bird.id;
+          const isPendingClear = appState.pendingClearLogId === bird.id;
+          const hasNote = !!(log.date || log.place || log.note);
+
+          const clearBtnHtml = isPendingClear
+            ? '<div style="display:flex; gap:6px; align-items:center;">' +
+                '<button type="button" class="btn-danger-solid" onclick="BirdApp.confirmClearLog(' + bird.id + ')">確認清除</button>' +
+                '<button type="button" class="btn-outline" onclick="BirdApp.cancelClearLog()">取消</button>' +
+              '</div>'
+            : '<button type="button" class="btn-danger-soft" onclick="BirdApp.requestClearLog(' + bird.id + ')">🗑️ 清除這筆</button>';
+
+          return '<div class="log-card ' + (isSeen ? 'is-collected' : '') + '">' +
+            '<div class="log-card-top">' +
+              '<div class="log-thumb ' + (isSeen ? '' : 'dimmed') + '" data-lazy-bird="' + bird.id + '">' +
+                '<div id="log-media-' + bird.id + '" class="media-slot">' + renderBirdMediaInner(bird, { compact: true, clickableZoom: false }) + '</div>' +
+              '</div>' +
+              '<div style="flex:1; min-width:0;">' +
+                '<div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">' +
+                  '<strong style="font-size:1rem;">#' + bird.id + ' ' + escapeHtml(bird.name) + '</strong>' +
+                  '<span class="size-pill">' + HABITAT_META[bird.habitat].short + '</span>' +
+                '</div>' +
+                '<div style="font-size:0.72rem; color:var(--text-soft); margin:2px 0 7px;">' + escapeHtml(bird.en) + '</div>' +
+                '<div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px;">' +
+                  '<button type="button" class="mini-log-btn ' + (log.seen ? 'active-seen' : '') + '" onclick="BirdApp.quickToggleLog(event, ' + bird.id + ', \'seen\')">' + (log.seen ? '✅ 已看過' : '👀 標記看過') + '</button>' +
+                  '<button type="button" class="mini-log-btn ' + (log.heard ? 'active-heard' : '') + '" onclick="BirdApp.quickToggleLog(event, ' + bird.id + ', \'heard\')">👂 ' + (log.heard ? '聽過 ✓' : '聽過') + '</button>' +
+                  '<button type="button" class="btn-outline" style="margin-left:auto; padding:5px 9px; font-size:0.72rem;" onclick="BirdApp.toggleLogEditor(' + bird.id + ')">' + (isExpanded ? '收合 ▲' : '✏️ 編輯') + '</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            ((!isExpanded && hasNote)
+              ? '<div style="background:var(--bg-sub); border-radius:11px; padding:8px 10px; font-size:0.76rem; color:var(--text-muted);">' +
+                  (log.date ? '<span style="margin-right:10px;">📅 ' + escapeHtml(log.date) + '</span>' : '') +
+                  (log.place ? '<span>📍 ' + escapeHtml(log.place) + '</span>' : '') +
+                  (log.note ? '<div style="margin-top:3px;">📝 ' + escapeHtml(log.note) + '</div>' : '') +
+                '</div>'
+              : '') +
+            (isExpanded
+              ? '<div class="log-editor">' +
+                  '<div style="display:flex; flex-direction:column; gap:6px; background:var(--bg-sub); padding:9px 11px; border-radius:11px; font-size:0.78rem; font-weight:700;">' +
+                    '<label style="display:flex; align-items:center; gap:7px; cursor:pointer;">' +
+                      '<input id="log-seen-chk-' + bird.id + '" type="checkbox" ' + (log.seen ? 'checked' : '') + ' />' +
+                      '<span>✅ 已親眼看過（同步加入賞鳥挑戰題庫）</span>' +
+                    '</label>' +
+                    '<label style="display:flex; align-items:center; gap:7px; cursor:pointer;">' +
+                      '<input id="log-heard-chk-' + bird.id + '" type="checkbox" ' + (log.heard ? 'checked' : '') + ' />' +
+                      '<span>👂 曾聽過叫聲</span>' +
+                    '</label>' +
+                  '</div>' +
+                  '<div class="log-editor-grid">' +
+                    '<label class="field-label">目擊日期<input id="log-date-' + bird.id + '" type="date" class="text-input" value="' + escapeHtml(log.date) + '" /></label>' +
+                    '<label class="field-label">觀察地點<input id="log-place-' + bird.id + '" type="text" class="text-input" placeholder="例：大安森林公園、七股濕地" value="' + escapeHtml(log.place) + '" /></label>' +
+                  '</div>' +
+                  '<label class="field-label">親子觀察筆記<textarea id="log-note-' + bird.id + '" rows="2" class="text-input" placeholder="記下當時的行為、天氣或孩子發現的小秘密...">' + escapeHtml(log.note) + '</textarea></label>' +
+                  '<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:2px;">' +
+                    clearBtnHtml +
+                    '<button type="button" class="btn-solid" onclick="BirdApp.saveLogForm(' + bird.id + ')">💾 儲存筆記</button>' +
+                  '</div>' +
+                '</div>'
+              : '') +
+          '</div>';
+        }).join('');
+
+        observeLazyMedia(container);
+        updateLogSummaryUI();
+      }
+
+      /* =========================================================
+         10. 護眼暗色模式與分頁切換
+         ========================================================= */
+      function applyDarkMode() {
+        const btn = byId('btn-dark-mode');
+        const icon = byId('dark-icon');
+        const label = byId('dark-label');
+        const themeMeta = byId('themeColorMeta');
+
+        document.documentElement.classList.toggle('dark-mode', appState.darkMode);
+        document.body.classList.toggle('dark-mode', appState.darkMode);
+
+        if (btn) {
+          btn.classList.toggle('active', appState.darkMode);
+          btn.setAttribute('aria-pressed', appState.darkMode ? 'true' : 'false');
+        }
+        if (icon) icon.textContent = appState.darkMode ? '☀️' : '🌙';
+        if (label) label.textContent = appState.darkMode ? '亮色手冊' : '護眼暗色';
+        if (themeMeta) themeMeta.setAttribute('content', appState.darkMode ? '#0e1d19' : '#143029');
+      }
+
+      function switchTab(tabName) {
+        appState.activeTab = tabName;
+        collapseAllCardYouTube();
+
+        ['guide', 'quiz', 'log'].forEach(function (t) {
+          const view = byId('view-' + t);
+          const btn = byId('tab-' + t);
+          const active = t === tabName;
+          if (view) view.classList.toggle('hidden', !active);
+          if (btn) {
+            btn.classList.toggle('active', active);
+            btn.setAttribute('aria-selected', active ? 'true' : 'false');
+          }
+        });
+
+        if (tabName === 'quiz') {
+          renderQuizView(false);
+        } else if (tabName === 'log') {
+          renderLogList();
+        } else {
+          renderBirdGrid();
+        }
+      }
+
+      /* =========================================================
+         11. 對外統一介面 window.BirdApp
+         ========================================================= */
+      window.BirdApp = {
+        toggleCardYouTube: toggleCardYouTube,
+        toggleDetailBackupYt: toggleDetailBackupYt,
+        openDetailModal: openDetailModal,
+        openLightbox: openLightbox,
+        submitQuizAnswer: submitQuizAnswer,
+
+        handlePhotoError: function (sci) {
+          const entry = photoCacheBySci[sci];
+          if (!entry) return;
+          if (entry.fullUrl && entry.url !== entry.fullUrl) {
+            entry.url = entry.fullUrl;
+            refreshPhotoSlotsBySci(sci);
+            return;
+          }
+          photoCacheBySci[sci] = { status: 'offline', url: null, fullUrl: null, sourceLabel: '離線棲地剪影' };
+          refreshPhotoSlotsBySci(sci);
+        },
+
+        quickToggleLog: function (e, birdId, field) {
+          if (e) e.stopPropagation();
+          const cur = getLog(birdId);
+          cur[field] = !cur[field];
+          if (cur[field] && !cur.date) {
+            cur.date = new Date().toISOString().split('T')[0];
+          }
+          appState.logs[birdId] = cur;
+          saveData(false);
+
+          if (appState.activeTab === 'guide') renderBirdGrid();
+          if (currentDetailId === birdId) renderDetailModal();
+          if (appState.activeTab === 'log') renderLogList();
+        },
+
+        toggleLogEditor: function (birdId) {
+          appState.pendingClearLogId = null;
+          appState.expandedLogId = appState.expandedLogId === birdId ? null : birdId;
+          renderLogList();
+        },
+
+        saveLogForm: function (birdId) {
+          const cur = getLog(birdId);
+          const seenChk = byId('log-seen-chk-' + birdId);
+          const heardChk = byId('log-heard-chk-' + birdId);
+          const dEl = byId('log-date-' + birdId);
+          const pEl = byId('log-place-' + birdId);
+          const nEl = byId('log-note-' + birdId);
+          if (seenChk) cur.seen = seenChk.checked;
+          if (heardChk) cur.heard = heardChk.checked;
+          cur.date = dEl ? dEl.value : '';
+          cur.place = pEl ? pEl.value.trim() : '';
+          cur.note = nEl ? nEl.value.trim() : '';
+          if (cur.seen && !cur.date) {
+            cur.date = new Date().toISOString().split('T')[0];
+          }
+          appState.logs[birdId] = cur;
+          appState.expandedLogId = null;
+          appState.pendingClearLogId = null;
+          saveData(false);
+          renderLogList();
+        },
+
+        requestClearLog: function (birdId) {
+          appState.pendingClearLogId = birdId;
+          renderLogList();
+        },
+
+        cancelClearLog: function () {
+          appState.pendingClearLogId = null;
+          renderLogList();
+        },
+
+        confirmClearLog: function (birdId) {
+          delete appState.logs[birdId];
+          appState.expandedLogId = null;
+          appState.pendingClearLogId = null;
+          saveData(true);
+          showToast('已清除該筆觀察紀錄');
+          renderLogList();
+          if (currentDetailId === birdId) renderDetailModal();
+        },
+
+        requestClearAllLogs: function () {
+          appState.pendingClearAllLogs = true;
+          renderClearAllControl();
+        },
+
+        cancelClearAllLogs: function () {
+          appState.pendingClearAllLogs = false;
+          renderClearAllControl();
+        },
+
+        confirmClearAllLogs: function () {
+          appState.logs = {};
+          appState.expandedLogId = null;
+          appState.pendingClearLogId = null;
+          appState.pendingClearAllLogs = false;
+          saveData(true);
+          showToast('已清除所有觀察紀錄');
+          renderLogList();
+        }
+      };
+
+      /* =========================================================
+         12. 初始化與事件綁定
+         ========================================================= */
+      document.addEventListener('DOMContentLoaded', function () {
+        initSilentPwaAssets();
+        setupMediaObserver();
+        loadSavedData();
+        applyDarkMode();
+        updateLogSummaryUI();
+        renderBirdGrid();
+
+        // 三大分頁切換
+        document.querySelectorAll('.tab-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const t = btn.getAttribute('data-tab');
+            if (t) switchTab(t);
+          });
+        });
+
+        // 圖鑑 8 大篩選按鈕
+        const filterChips = byId('filter-chips');
+        if (filterChips) {
+          filterChips.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-filter]');
+            if (!btn) return;
+            appState.activeFilter = btn.getAttribute('data-filter');
+            filterChips.querySelectorAll('button[data-filter]').forEach(function (b) {
+              b.classList.toggle('active', b === btn);
+            });
+            renderBirdGrid();
+          });
+        }
+
+        // 圖鑑搜尋與重設
+        safeBind('search-input', 'input', function (e) {
+          appState.keyword = e.target.value;
+          renderBirdGrid();
+        });
+
+        safeBind('btn-reset-filters', 'click', function () {
+          appState.activeFilter = 'all';
+          appState.keyword = '';
+          const inp = byId('search-input');
+          if (inp) inp.value = '';
+          if (filterChips) {
+            filterChips.querySelectorAll('button[data-filter]').forEach(function (b) {
+              b.classList.toggle('active', b.getAttribute('data-filter') === 'all');
+            });
+          }
+          renderBirdGrid();
+        });
+
+        // 護眼暗色模式
+        safeBind('btn-dark-mode', 'click', function () {
+          appState.darkMode = !appState.darkMode;
+          applyDarkMode();
+          saveData(true);
+          showToast(appState.darkMode ? '🌙 已開啟護眼暗色模式' : '☀️ 已切換為溫潤米白手冊模式');
+        });
+
+        // 賞鳥禮儀彈窗
+        const ethicsModal = byId('ethics-modal');
+        safeBind('btn-ethics', 'click', function () {
+          if (ethicsModal) ethicsModal.classList.remove('hidden');
+        });
+        safeBind('btn-close-ethics', 'click', function () {
+          if (ethicsModal) ethicsModal.classList.add('hidden');
+        });
+        safeBind('btn-ok-ethics', 'click', function () {
+          if (ethicsModal) ethicsModal.classList.add('hidden');
+        });
+        // 賞鳥特徵識別挑戰控制
+        safeBind('btn-pool-seen', 'click', function () { setQuizPool('seen'); });
+        safeBind('btn-pool-all', 'click', function () { setQuizPool('all'); });
+        safeBind('btn-mode-feature', 'click', function () { setQuizMode('feature'); });
+        safeBind('btn-mode-photo', 'click', function () { setQuizMode('photo'); });
+
+        const scopeChips = byId('quiz-scope-chips');
+        if (scopeChips) {
+          scopeChips.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-scope]');
+            if (btn) setQuizScope(btn.getAttribute('data-scope'));
+          });
+        }
+
+        // 空狀態三個快速引導按鈕
+        safeBind('btn-seed-urban', 'click', function () {
+          const today = new Date().toISOString().split('T')[0];
+          QUICK_SEED_URBAN_IDS.forEach(function (id) {
+            const cur = getLog(id);
+            cur.seen = true;
+            if (!cur.date) cur.date = today;
+            appState.logs[id] = cur;
+          });
+          saveData(true);
+          showToast('✨ 已勾選 6 種市區常見鳥，開始挑戰吧！');
+          renderQuizView(true);
+        });
+
+        safeBind('btn-go-log', 'click', function () {
+          switchTab('log');
+        });
+
+        safeBind('btn-switch-all-pool', 'click', function () {
+          setQuizPool('all');
+        });
+
+        safeBind('btn-quiz-hint-feature', 'click', function () {
+          const el = byId('quiz-hint-text-feature');
+          if (el && appState.quiz.currentBird) {
+            el.textContent = '🎵 叫聲記憶口訣：' + sanitizeClue(appState.quiz.currentBird.callText, appState.quiz.currentBird);
+            el.classList.toggle('hidden');
+          }
+        });
+
+        safeBind('btn-quiz-hint-photo', 'click', function () {
+          const el = byId('quiz-hint-text-photo');
+          if (el && appState.quiz.currentBird) {
+            el.textContent = '🪶 外觀特徵提示：' + sanitizeClue(appState.quiz.currentBird.features, appState.quiz.currentBird);
+            el.classList.toggle('hidden');
+          }
+        });
+
+        safeBind('btn-quiz-next', 'click', startQuizRound);
+
+        safeBind('btn-quiz-open-detail', 'click', function () {
+          if (appState.quiz.currentBird) {
+            openDetailModal(appState.quiz.currentBird.id);
+          }
+        });
+
+        // 紀錄簿篩選控制
+        const logHabChips = byId('log-habitat-chips');
+        if (logHabChips) {
+          logHabChips.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-loghab]');
+            if (!btn) return;
+            appState.logHabitat = btn.getAttribute('data-loghab');
+            logHabChips.querySelectorAll('button[data-loghab]').forEach(function (b) {
+              b.classList.toggle('active', b === btn);
+            });
+            renderLogList();
+          });
+        }
+
+        const logStatusChips = byId('log-status-chips');
+        if (logStatusChips) {
+          logStatusChips.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-logstatus]');
+            if (!btn) return;
+            appState.logStatus = btn.getAttribute('data-logstatus');
+            logStatusChips.querySelectorAll('button[data-logstatus]').forEach(function (b) {
+              b.classList.toggle('active', b === btn);
+            });
+            renderLogList();
+          });
+        }
+
+        safeBind('log-search-input', 'input', function (e) {
+          appState.logKeyword = e.target.value;
+          renderLogList();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
