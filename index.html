@@ -1681,7 +1681,7 @@
           <div class="hero-kicker">🦜 完整收錄 100 種台灣野鳥 · 真實生態照與野外錄音</div>
           <h2 class="hero-title">從都市公園、田野濕地到高山森林，帶孩子認識百大台灣野鳥！</h2>
           <p class="hero-desc">
-            內建 12 種代表野鳥台灣野外 YouTube 實錄，其餘 88 種全面串接 YouTube 真實鳥音與 Xeno-canto 國際鳥音庫；點擊任意卡片可開啟完整圖鑑與全螢幕大圖檢視。
+            內建 12 種代表野鳥台灣野外 YouTube 實錄，其餘 88 種全面串接 YouTube 真實鳥音；點擊任意卡片可開啟完整圖鑑與全螢幕大圖檢視。
           </p>
         </div>
         <div class="hero-notice">
@@ -1971,7 +1971,7 @@
         </div>
       </div>
       <p class="footer-credit">
-        台灣賞鳥百大圖鑑｜生態照片來源：Wikipedia / Wikimedia Commons · 真實鳥音來源：YouTube &amp; Xeno-canto
+        台灣賞鳥百大圖鑑｜生態照片來源：Wikipedia / Wikimedia Commons · 真實鳥音來源：YouTube
       </p>
     </div>
   </footer>
@@ -2070,10 +2070,6 @@
 
       function buildYouTubeSearchUrl(bird) {
         return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(bird.name + ' 叫聲 台灣 野外');
-      }
-
-      function buildXenoCantoUrl(bird) {
-        return 'https://xeno-canto.org/explore?query=' + encodeURIComponent(bird.sci);
       }
 
       let toastTimer = null;
@@ -2869,8 +2865,7 @@
           const log = getLog(bird.id);
           const audioButtons = bird.verifiedYT
             ? '<button id="btn-card-yt-' + bird.id + '" type="button" class="btn-solid flex-1" onclick="BirdApp.toggleCardYouTube(event, ' + bird.id + ')"><span>🎬</span><span>聽真實叫聲</span></button>'
-            : '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-solid flex-1"><span>🎬</span><span>YouTube 真實鳥音</span></a>' +
-              '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-outline"><span>🎵</span><span>Xeno-canto</span></a>';
+            : '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-solid flex-1"><span>🎬</span><span>YouTube 真實鳥音</span></a>';
 
           return '<article class="bird-card" onclick="BirdApp.openDetailModal(' + bird.id + ')">' +
             '<div class="card-media" data-lazy-bird="' + bird.id + '">' +
@@ -2988,19 +2983,17 @@
                 'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
               '</div>' +
               '<div class="audio-btn-row">' +
-                '<button id="btn-detail-yt-switch" type="button" class="btn-solid" onclick="BirdApp.toggleDetailBackupYt()"><span>🔄</span><span>' + (detailUseBackupYt ? '切回主要錄音' : '切換備用錄音') + '</span></button>' +
-                '<a id="detail-yt-external" href="https://www.youtube.com/watch?v=' + encodeURIComponent(ytId) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>↗</span><span>在 YouTube 開啟</span></a>' +
-                '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-outline"><span>🎵</span><span>Xeno-canto 鳥音庫</span></a>' +
+                '<button id="btn-detail-yt-switch" type="button" class="btn-solid flex-1" onclick="BirdApp.toggleDetailBackupYt()"><span>🔄</span><span>' + (detailUseBackupYt ? '切回主要錄音' : '切換備用錄音') + '</span></button>' +
+                '<a id="detail-yt-external" href="https://www.youtube.com/watch?v=' + encodeURIComponent(ytId) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red flex-1"><span>↗</span><span>在 YouTube 開啟</span></a>' +
               '</div>' +
               '<p class="call-text">💡 叫聲記憶口訣：' + escapeHtml(bird.callText) + '</p>' +
             '</div>';
         } else {
           audioSectionHtml =
             '<div class="audio-box" style="padding:14px; gap:10px;">' +
-              '<strong style="font-size:0.9rem;">🎬 真實野外鳥音收聽</strong>' +
+              '<strong style="font-size:0.9rem;">🎬 真實野外鳥音收聽（YouTube）</strong>' +
               '<div class="audio-btn-row">' +
-                '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>🎬</span><span>YouTube 真實鳥音</span></a>' +
-                '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-solid"><span>🎵</span><span>Xeno-canto 鳥音庫</span></a>' +
+                '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red flex-1"><span>🎬</span><span>前往 YouTube 聽真實鳥音</span></a>' +
               '</div>' +
               '<p class="call-text">💡 叫聲記憶口訣：' + escapeHtml(bird.callText) + '</p>' +
             '</div>';
@@ -3793,6 +3786,38 @@
         safeBind('btn-ok-ethics', 'click', function () {
           if (ethicsModal) ethicsModal.classList.add('hidden');
         });
+        safeBind('ethics-modal', 'click', function (e) {
+          if (e.target === ethicsModal) ethicsModal.classList.add('hidden');
+        });
+
+        // 詳情彈窗與大圖 Lightbox 關閉綁定
+        safeBind('btn-close-detail', 'click', closeDetailModal);
+        safeBind('detail-modal', 'click', function (e) {
+          if (e.target === byId('detail-modal')) closeDetailModal();
+        });
+        safeBind('btn-close-lightbox', 'click', closeLightbox);
+        safeBind('lightbox-modal', 'click', function (e) {
+          if (e.target === byId('lightbox-modal')) closeLightbox();
+        });
+
+        // ESC 鍵關閉彈窗
+        document.addEventListener('keydown', function (e) {
+          if (e.key !== 'Escape') return;
+          const lb = byId('lightbox-modal');
+          if (lb && !lb.classList.contains('hidden')) {
+            closeLightbox();
+            return;
+          }
+          const dm = byId('detail-modal');
+          if (dm && !dm.classList.contains('hidden')) {
+            closeDetailModal();
+            return;
+          }
+          if (ethicsModal && !ethicsModal.classList.contains('hidden')) {
+            ethicsModal.classList.add('hidden');
+          }
+        });
+
         // 賞鳥特徵識別挑戰控制
         safeBind('btn-pool-seen', 'click', function () { setQuizPool('seen'); });
         safeBind('btn-pool-all', 'click', function () { setQuizPool('all'); });
