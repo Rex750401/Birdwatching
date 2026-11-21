@@ -1681,7 +1681,7 @@
           <div class="hero-kicker">🦜 完整收錄 100 種台灣野鳥 · 真實生態照與野外錄音</div>
           <h2 class="hero-title">從都市公園、田野濕地到高山森林，帶孩子認識百大台灣野鳥！</h2>
           <p class="hero-desc">
-            內建 12 種代表野鳥台灣野外 YouTube 實錄，其餘 88 種全面串接 YouTube 真實鳥音與 Xeno-canto 國際鳥音庫；點擊任意卡片可開啟完整圖鑑與全螢幕大圖檢視。
+            全部 100 種野鳥皆內嵌台灣野外 YouTube 實錄；點擊任意卡片可開啟完整圖鑑與全螢幕大圖檢視。
           </p>
         </div>
         <div class="hero-notice">
@@ -1784,11 +1784,11 @@
           <div style="font-size:2.4rem; line-height:1;">🔭🐦</div>
           <h3 style="margin:0; font-size:1.15rem; font-weight:900;">還沒標記任何「已看過的野鳥」喔！</h3>
           <p style="margin:0; font-size:0.84rem; color:rgba(250,248,242,0.82); max-width:440px;">
-            先勾選你們在公園、校園或郊外看過的鳥，就能用專屬的觀察清單來玩特徵識別挑戰！
+            先勾選你們在公園、校園或郊外看過的鳥，就能用專屬的觀察清單來玩挑戰；也可以先用市區常見鳥試玩！
           </p>
           <div class="empty-quiz-actions">
             <button id="btn-seed-urban" type="button" class="btn-amber" style="width:100%; padding:11px 14px;">
-              ✨ 一鍵勾選 6 種市區常見鳥馬上開玩
+              ✨ 用 6 種市區常見鳥試玩
             </button>
             <button id="btn-go-log" type="button" class="btn-outline" style="width:100%; padding:10px 14px; background:rgba(255,255,255,0.12); color:#faf8f2; border-color:rgba(255,255,255,0.28);">
               📒 前往紀錄簿勾選看過的鳥
@@ -1971,7 +1971,7 @@
         </div>
       </div>
       <p class="footer-credit">
-        台灣賞鳥百大圖鑑｜生態照片來源：Wikipedia / Wikimedia Commons · 真實鳥音來源：YouTube &amp; Xeno-canto
+        台灣賞鳥百大圖鑑｜生態照片來源：Wikipedia / Wikimedia Commons · 真實鳥音來源：YouTube
       </p>
     </div>
   </footer>
@@ -2048,6 +2048,12 @@
         if (el) el.addEventListener(eventName, handler);
       }
 
+      function todayLocal() {
+        const d = new Date();
+        const p = function (n) { return String(n).padStart(2, '0'); };
+        return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+      }
+
       function escapeHtml(str) {
         return String(str == null ? '' : str)
           .replace(/&/g, '&amp;')
@@ -2068,12 +2074,16 @@
         return 'https://www.youtube.com/embed/' + encodeURIComponent(videoId) + '?rel=0&modestbranding=1&playsinline=1&fs=' + fsVal + originParam;
       }
 
-      function buildYouTubeSearchUrl(bird) {
-        return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(bird.name + ' 叫聲 台灣 野外');
+      function renderYtPlaceholder(bird) {
+        return '<div class="yt-frame-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:#101c18; padding:12px; text-align:center;">' +
+          '<span style="font-size:1.8rem;">🎬</span>' +
+          '<span style="font-size:0.78rem; color:#cfd9d4;">這種鳥的內嵌錄音尚未收錄</span>' +
+          '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>↗</span><span>在 YouTube 搜尋' + escapeHtml(bird.name) + '叫聲</span></a>' +
+        '</div>';
       }
 
-      function buildXenoCantoUrl(bird) {
-        return 'https://xeno-canto.org/explore?query=' + encodeURIComponent(bird.sci);
+      function buildYouTubeSearchUrl(bird) {
+        return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(bird.name + ' 叫聲 台灣 野外');
       }
 
       let toastTimer = null;
@@ -2265,18 +2275,113 @@
       };
 
       const VERIFIED_YT_MAP = {
-        1:  { primary: 'p92OKfP9oQk', backup: 'kNCXSsDQmh0' },
-        2:  { primary: 'XvwF3TYk83I', backup: 'B8-2EKrNwzo' },
-        3:  { primary: 'OIk0HtbzK78', backup: 'Yr5c9EGjXXc' },
-        6:  { primary: 'mfEOyWkrqGg', backup: '-eGIoc5xxTc' },
-        14: { primary: '7QqdfKikZEA', backup: '5IG8AfgTl84' },
-        16: { primary: '3VO7imcqr3M', backup: 'Va2G3NEtasg' },
-        17: { primary: 'nzq0eKjc2wY', backup: 't9CrBW7WG2E' },
-        35: { primary: 'GbKQzeaV6Qs', backup: '7FBUrtLQkzc' },
-        51: { primary: 'm64Dhq-Eygc', backup: '1KlJuowbQgg' },
-        53: { primary: '-vF5nldAFXc', backup: 'hwggnweXaqc' },
-        65: { primary: 'AyOHrzr0Muk', backup: 'Q8hbHXVaAGw' },
-        72: { primary: 'wLoFdXwZ7Aw', backup: '1LNw_1i_sgA' }
+        // ==================== 都市與郊區（20/20）====================
+        1:  { primary: 'p92OKfP9oQk', backup: 'kNCXSsDQmh0' }, // 麻雀
+        2:  { primary: 'XvwF3TYk83I', backup: 'B8-2EKrNwzo' }, // 白頭翁
+        3:  { primary: 'OIk0HtbzK78', backup: 'Yr5c9EGjXXc' }, // 綠繡眼
+        4:  { primary: 'N9P3nC0CSoo', backup: 'RFqpY0vhFu4' }, // 樹鵲
+        5:  { primary: 'ZdxeiGx16Dk', backup: 'epiSp6Witp4' }, // 紅嘴黑鵯
+        6:  { primary: 'mfEOyWkrqGg', backup: '-eGIoc5xxTc' }, // 珠頸斑鳩
+        7:  { primary: 'hCqebSUsNqQ', backup: 'ICGuzAllHdI' }, // 紅鳩
+        8:  { primary: 'OHVpGMcQH6Y', backup: 'Fy2XegnuIfM' }, // 野鴿
+        9:  { primary: 's3askelwBY0', backup: 'jDmSC1VQRwM' }, // 家八哥
+        10: { primary: '05qurwwXSLo', backup: 'ATXmCQQQnvE' }, // 白尾八哥
+        11: { primary: 'fWf8lj_HsOQ', backup: '-pcORtfhe70' }, // 灰頭椋鳥
+        12: { primary: '3_mUzeZdXgc', backup: 'l-C_AFjTb2o' }, // 家燕
+        13: { primary: 'PTFAR-1Gwww', backup: '3N37BnMS6Ng' }, // 洋燕
+        14: { primary: '7QqdfKikZEA', backup: '5IG8AfgTl84' }, // 五色鳥
+        15: { primary: 'STCoVBgkOzM', backup: 'SNskMkIl-Pg' }, // 小啄木
+        16: { primary: '3VO7imcqr3M', backup: 'Va2G3NEtasg' }, // 黑冠麻鷺
+        17: { primary: 'nzq0eKjc2wY', backup: 't9CrBW7WG2E' }, // 大卷尾
+        18: { primary: 'Yy-tH1hlBLY', backup: 'zJfSNiHQvd0' }, // 白腰鵲鴝
+        19: { primary: 'oNMOwPywnZI', backup: 'tboeyp9e_BY' }, // 黃尾鴝
+        20: { primary: '9Q8TQGNxuxw', backup: 'qvDwq9p7RMM' }, // 黑枕藍鶲
+
+        // ==================== 田野與草地（14/14）====================
+        21: { primary: 'd7M58i3VYV0', backup: 'kGQqy1OdHJY' }, // 棕背伯勞
+        22: { primary: 'UlsN79zuNfM', backup: 'D6GDgdinjlw' }, // 紅尾伯勞
+        23: { primary: 'na3ppWz2wYM', backup: 'D0mLuOraySM' }, // 褐頭鷦鶯
+        24: { primary: 'tb_SNgClTac', backup: 'ZnXVDFedlkA' }, // 灰頭鷦鶯
+        25: { primary: 'FRnBNcWrNEM', backup: 'CeiRFK34KcQ' }, // 斑文鳥
+        26: { primary: '1Eq7WlBf_eg', backup: 'GM8kJL48aJs' }, // 白腰文鳥
+        27: { primary: 'JYvyc58dP9M', backup: 'iKFrUHXLywc' }, // 黃頭鷺
+        28: { primary: '5051klnMj7o', backup: 'yFq4XedcdsQ' }, // 白鶺鴒
+        29: { primary: 'V2ob0qOGxtI', backup: 'XFEeR7yDkyM' }, // 灰鶺鴒
+        30: { primary: 'Ho89y-nmSMw', backup: 'tOHz0Mvv01o' }, // 東方黃鶺鴒
+        31: { primary: 'CEpmFL5bMA4', backup: 'O9Hgl4OQW6k' }, // 小雲雀
+        32: { primary: '9tpJsgzkqOE', backup: 'pPWey5haogs' }, // 棕三趾鶉
+        33: { primary: 'JCLDk24PAcc', backup: 'uD3n8Shpu4w' }, // 黑翅鳶
+        34: { primary: 'TuAUjQsYZRQ', backup: 'pYW3_xIuF4w' }, // 紅隼
+
+        // ==================== 水域與濕地（30/30）====================
+        35: { primary: 'GbKQzeaV6Qs', backup: '7FBUrtLQkzc' }, // 小白鷺
+        36: { primary: '5d9fYic5GHQ', backup: 'ZoaFjtqmWuo' }, // 中白鷺
+        37: { primary: 'HT3RNeri7Z4', backup: 'Jb8G6aga728' }, // 大白鷺
+        38: { primary: 'dHFdTSnJTbw', backup: 'rHLjemcudBY' }, // 蒼鷺
+        39: { primary: 'LUlKOg91biw', backup: 'F0eJcf4jdts' }, // 夜鷺
+        40: { primary: 'jSk1ROwAYcU', backup: 'lzpuGZRgm2E' }, // 栗小鷺
+        41: { primary: 'YtVH0B_EQGM', backup: 'orNtDwro7cg' }, // 紅冠水雞
+        42: { primary: '7uLW9bszuak', backup: 'OYDEjWGC3jg' }, // 白腹秧雞
+        43: { primary: 'IgU_kFJUMyI', backup: 'uv4fCTaATIo' }, // 小鸊鷉
+        44: { primary: 'KoBB9DaHPfo', backup: 'oxZW3FZvdyc' }, // 小水鴨
+        45: { primary: 'Aw--fYLhcTQ', backup: 'kSvaVhOBj7M' }, // 琵嘴鴨
+        46: { primary: '0zSV-syE1EM', backup: '-BWgzcUC35c' }, // 赤頸鴨
+        47: { primary: 'Om54rpsKu9E', backup: 'oefN5ynrK7k' }, // 尖尾鴨
+        48: { primary: '_xG-CEhhiGQ', backup: 'IwC1aeKNXZ0' }, // 鸕鷀
+        49: { primary: 'H4nJEiZKSVE', backup: 'bh-ejM45-cs' }, // 翠鳥
+        50: { primary: 's8xfZggDp9A', backup: '8cxJSptWE8U' }, // 魚鷹
+        51: { primary: 'm64Dhq-Eygc', backup: '1KlJuowbQgg' }, // 黑面琵鷺
+        52: { primary: '-vF5nldAFXc', backup: 'hwggnweXaqc' }, // 黑翅長腳鷸
+        53: { primary: '7sUJm2CCvVU', backup: 'DVWLe9CCFC0' }, // 反嘴鴴
+        54: { primary: 'LRr4UHE_vBk', backup: 'vwCQoN0ed7k' }, // 小環頸鴴
+        55: { primary: 'ELVBJc6mcos', backup: 'ZEii52dk9p8' }, // 東方環頸鴴
+        56: { primary: 'yn76NjQfC3I', backup: 'LFeifxJ12g4' }, // 青足鷸
+        57: { primary: 'oxlq5vaUv3A', backup: 'fH5RIBRNZxY' }, // 鷹斑鷸
+        58: { primary: 'oZ2MZ5q8Bos', backup: 'B3iz4ZUt5jo' }, // 磯鷸
+        59: { primary: 'JF5wW43WSO4', backup: 'kHAUKG56zok' }, // 黑腹燕鷗
+        60: { primary: 'HVzVDp4BxVk', backup: 'ELjLCbl11_s' }, // 小燕鷗
+        61: { primary: 'kg0q5c-U8Ws', backup: 'swo3khfpPAQ' }, // 黑嘴鷗
+        62: { primary: 'E1CVgANJVKY', backup: '9ZxGd46-sRM' }, // 紅嘴鷗
+        63: { primary: '5w5NKHjKTTQ', backup: '51HqWS4ZvtQ' }, // 彩鷸
+        64: { primary: 'qF9x-0IynPc', backup: 'quKKzxKVDmQ' }, // 河烏
+
+        // ==================== 山區與森林（36/36）====================
+        65:  { primary: 'AyOHrzr0Muk', backup: 'Q8hbHXVaAGw' }, // 台灣藍鵲
+        66:  { primary: 'Zya36aoaeS4', backup: '1mLUurQ5Nbg' }, // 帝雉
+        67:  { primary: '5PQLYwx5ziQ', backup: 'QUWbxaw767I' }, // 藍腹鷴
+        68:  { primary: 'KWpQ7xHdl6c', backup: '_e4w3wKb2OI' }, // 黃山雀
+        69:  { primary: 'DFlLIcisLD8', backup: 'VTB8UqmwqBo' }, // 冠羽畫眉
+        70:  { primary: 'ccDmD7XRAlE', backup: '2WPfXRUpCg0' }, // 白耳畫眉
+        71:  { primary: '3jX3dj8AqhM', backup: 'D7we4ZiKrBk' }, // 藪鳥
+        72:  { primary: 'wLoFdXwZ7Aw', backup: '1LNw_1i_sgA' }, // 台灣紫嘯鶇
+        73:  { primary: 'wnNKWswLs7c', backup: 'YLwfAdJDMKM' }, // 青背山雀
+        74:  { primary: 'hmjqod60-yE', backup: '_WNOJ0rxmJY' }, // 赤腹山雀
+        75:  { primary: 'lucwlTwD16A', backup: 'VEFPIIYjl9E' }, // 煤山雀
+        76:  { primary: '0jaPhjQchRE', backup: 'ELHfLYjtrd8' }, // 綠鳩
+        77:  { primary: 'XJVJzeqW0xY', backup: 'gYo0qStAHP0' }, // 小彎嘴
+        78:  { primary: 'clCXjNQXvU0', backup: 'sOesKwsfLDY' }, // 大彎嘴
+        79:  { primary: 'mMdmEzaSWqo', backup: 'msYOWDP9Fis' }, // 頭烏線
+        80:  { primary: 'tiOfEmWMM0c', backup: 'GU8wDgfOg8A' }, // 竹雞
+        81:  { primary: 'apTrCy0ci_w', backup: 'C1D50HaP-hs' }, // 深山竹雞
+        82:  { primary: 'eg7IB_AM9nE', backup: 'C_ppWfPMr58' }, // 灰喉山椒
+        83:  { primary: 'IBrAag_wHg8', backup: 'wyMBncp9egI' }, // 小剪尾
+        84:  { primary: 'A8P1eab1rGk', backup: 'dxpoicARWIU' }, // 鉛色水鶇
+        85:  { primary: 'EaN1hHLq3lA', backup: 'X5yokepc91I' }, // 火冠戴菊鳥
+        86:  { primary: 'hSQQx6G03y8', backup: 'Jv8tdsiZP8o' }, // 星鴉
+        87:  { primary: 'PUr0zsaoc6I', backup: 'u_N-TI--d3o' }, // 酒紅朱雀
+        88:  { primary: 't3wl21Nd0Q0', backup: 'HeMmKYwmbag' }, // 金翼白眉
+        89:  { primary: 'PXCUTUiaGk8', backup: 'baYkVfp7sv0' }, // 栗背林鴝
+        90:  { primary: '_KjCet_tjsU', backup: 'odC6F9HcGbM' }, // 白尾鴝
+        91:  { primary: 'mzvAToJOe8g', backup: 'q5KC8yXrHSo' }, // 白喉噪眉
+        92:  { primary: 'cI0q4T0I7aE', backup: 'nH_k6FQV7Uo' }, // 台灣鷦眉
+        93:  { primary: 'iX5HhC8xFBo', backup: 'Km39F2j9mLI' }, // 烏頭翁
+        94:  { primary: 'zTxRdeLBNGs', backup: 'DWAAe5p1pBo' }, // 紅胸啄花鳥
+        95:  { primary: '1DzjBzhQ1Z4', backup: 'C8o_vNrBKkM' }, // 大冠鷲
+        96:  { primary: 'wCOQK3Ghe_Q', backup: '__KjIPS7byk' }, // 鳳頭蒼鷹
+        97:  { primary: 'RZ_Z7fQBJGg', backup: '4uItawK6c4k' }, // 灰面鵟鷹
+        98:  { primary: 'e-8CkZhiMN4', backup: 'fN3plfPKcoo' }, // 黑鳶
+        99:  { primary: 'NFYUlv6HABk', backup: 'BYA0FCbFpMk' }, // 繡眼畫眉
+        100: { primary: 'j4ovQdrAN6A', backup: 'OciA6k0s3ik' }  // 台灣畫眉
       };
 
       // [id, name, en, sci, habitatKey, tags, size, features, habitatDesc, callText]
@@ -2337,8 +2442,8 @@
         [49,"翠鳥","Common Kingfisher","Alcedo atthis","wetland",["留鳥"],"16–17 cm","寶藍翠綠背部配亮橘紅腹部（魚狗），長尖嘴，像彩寶石般俯衝扎水捕魚。","清澈溪流、都會公園生態池、埤塘與水田溝渠，常靜佇水面枯枝上。","貼水面高速疾飛時高亢尖細的「唧—唧—！」"],
         [50,"魚鷹","Osprey","Pandion haliaetus","wetland",["冬候鳥"],"55–63 cm","背部深褐、頭頂與胸腹雪白、具寬大黑過眼線，腳底長有防滑刺鱗專抓大魚。","秋冬常見於各大水庫、河口濕地與大面積魚塭上空盤旋，垂直入水抓魚。","高空盤旋時清亮急促的「啾—啾—啾—」"],
         [51,"黑面琵鷺","Black-faced Spoonbill","Platalea minor","wetland",["冬候鳥"],"73–78 cm","全身雪白、臉部與長扁湯匙狀嘴喙漆黑，繁殖季腦後長出飄逸金黃飾羽。","每年冬天全球過半族群來台南七股、四草與嘉義鰲鼓等濕地魚塭度冬。","平時安靜，互動時偶發低沉「呃、呃」或拍嘴「喀喀」"],
-        [52,"黑翅長腳鷸","Black-winged Stilt","Himantopus himantopus","wetland",["留鳥"],"35–40 cm","黑白分明羽色配細長筆直黑嘴與超長粉紅腿（與 #53 高蹺鴴為同種異名）。","全台沿海濕地、休耕水田、鹽田與淺水魚塭，涉水啄食水生昆蟲與小蝦。","高亢清脆、連續急促的「嘰—嘰—嘰」像吹哨"],
-        [53,"高蹺鴴","Black-winged Stilt","Himantopus himantopus","wetland",["留鳥"],"35–40 cm","擁有不成比例的細長粉紅雙腿像踩高蹺（與 #52 黑翅長腳鷸為同種異名）。","全台沿海鹽田、魚塭與休耕水田，繁殖期見外敵靠近會盤旋大叫擬傷護雛。","高亢清脆、連續急促的「嘰—嘰—嘰」警戒聲"],
+        [52,"黑翅長腳鷸","Black-winged Stilt","Himantopus himantopus","wetland",["留鳥"],"35–40 cm","黑白分明羽色配細長筆直黑嘴與超長粉紅腿。","全台沿海濕地、休耕水田、鹽田與淺水魚塭，涉水啄食水生昆蟲與小蝦。","高亢清脆、連續急促的「嘰—嘰—嘰」像吹哨"],
+        [53,"反嘴鴴","Pied Avocet","Recurvirostra avosetta","wetland",["冬候鳥"],"42–45 cm","黑白分明的羽色，最特別是細長向上彎的黑嘴，腿呈青灰色。","冬季出沒於台南沿海魚塭、鹽田與河口淺水灘，邊走邊把嘴左右橫掃水面濾食。","清脆悅耳、短促的「克魯—伊、克魯—伊」"],
         [54,"小環頸鴴","Little Ringed Plover","Charadrius dubius","wetland",["留鳥"],"15–17 cm","背沙褐、腹白、頸部繞一圈完整黑環，最迷人是眼周有一圈亮黃眼眶。","河床礫石灘、乾涸魚塭、海濱沙地與水田，奔跑幾步就停下像裝了發條。","清脆略帶下降音的單音「匹—喔、匹—喔」"],
         [55,"東方環頸鴴","Kentish Plover","Charadrius alexandrinus","wetland",["留鳥"],"16–18 cm","胸前黑斑在中央斷開成左右兩塊黑胸斑，無黃眼眶，腳呈暗灰黑色。","全台沿海沙灘、河口泥灘、鹽田與魚塭堤岸，會在沙地淺凹處直接產卵。","輕柔短促、清亮上揚的「匹—瑞、匹—瑞」"],
         [56,"青足鷸","Common Greenshank","Tringa nebularia","wetland",["冬候鳥"],"30–35 cm","體型修長、背灰腹白，最大特徵是嘴微向上翹且擁有一雙灰綠色長腳。","秋冬常見於河口泥灘、魚塭淺水區與休耕水田，常疾走橫掃水面追捕小魚。","起飛時響亮三音節清脆口哨「啾—啾—啾！」"],
@@ -2358,12 +2463,12 @@
         [68,"黃山雀","Yellow Tit","Machlolophus holsti","forest",["台灣特有種","留鳥"],"12–13 cm","頭頂有帥氣直立黑色龐克羽冠，臉頰與胸腹鮮亮鵝黃色、背部藍灰。","中海拔 1,000–2,300m 闊葉林樹冠層，常混在山雀鳥浪中靈活倒掛枝頭。","清脆響亮、音調多變的「嘀嘀—啾哩」"],
         [69,"冠羽畫眉","Taiwan Yuhina","Yuhina brunneiceps","forest",["台灣特有種","留鳥"],"12–13 cm","頭頂褐色尖羽冠像戴小皇冠，臉白配黑色八字鬍與過眼線，外型萌度破表。","中海拔 1,000–2,800m 山林與櫻花季樹梢，常數十隻成群穿梭喧鬧。","清脆可愛、像在唱「吐米酒、吐米酒」"],
         [70,"白耳畫眉","White-eared Sibia","Heterophasia auricularis","forest",["台灣特有種","留鳥"],"22–24 cm","頭頂漆黑、由眼後向兩側延伸出兩道飄逸雪白長飾羽，背栗紅、長尾黑藍。","中海拔 1,000–2,500m 闊葉林與森林遊樂區高樹，愛在山櫻花間吸花蜜。","高亢清亮、穿透山谷的「飛—飛—飛—飛」長哨"],
-        [71,"藪鳥","Steere's Liocichla","Liocichla steerii","forest",["台灣特有種","留鳥"],"17–19 cm","全身橄欖黃綠、臉頰有醒目鮮黃圓斑（與 #76 黃胸藪眉為同種異名）。","中海拔山區林下灌叢與步道邊緣，生性不怕人，常在涼亭與營區旁跳躍。","響亮圓潤、尾音上揚的「急—救兒—！」"],
+        [71,"藪鳥","Steere's Liocichla","Liocichla steerii","forest",["台灣特有種","留鳥"],"17–19 cm","全身橄欖黃綠、臉頰有醒目鮮黃圓斑。","中海拔山區林下灌叢與步道邊緣，生性不怕人，常在涼亭與營區旁跳躍。","響亮圓潤、尾音上揚的「急—救兒—！」"],
         [72,"台灣紫嘯鶇","Taiwan Whistling Thrush","Myophonus insularis","forest",["台灣特有種","留鳥"],"28–30 cm","全身深邃紫藍色在陽光下閃耀金屬藍光，雙眼暗紅，停石頭上愛扇形開合尾羽。","低至中海拔山區清澈溪流、瀑布岩石與山澗步道，沿溪低飛捕食溪蝦水蟲。","尖銳高亢拉長尾音的「吱————」像單車煞車"],
         [73,"青背山雀","Green-backed Tit","Parus monticolus","forest",["留鳥"],"12–13 cm","頭黑配雪白大臉頰、背部翠綠、腹部鮮黃且正中央有一道帥氣黑色領帶。","中海拔 1,000–2,800m 森林與步道樹林，活潑好動常成群與其他山雀同行。","清脆明亮、規律反覆的「匹—啾、匹—啾」"],
         [74,"赤腹山雀","Chestnut-bellied Tit","Sittiparus castaneoventris","forest",["台灣特有種","留鳥"],"11–12 cm","頭黑、額頰淡米白、背部灰藍，整個胸腹部呈溫暖搶眼的栗紅褐色。","中低海拔 400–2,000m 原始闊葉林，動作靈巧敏捷，喜愛敲開堅果覓食。","高細清脆帶沙音的「滋—滋—畢畢」"],
         [75,"煤山雀","Coal Tit","Periparus ater","forest",["留鳥"],"10–11 cm","體型迷你，頭黑具小羽冠、白臉頰配後頸雪白斑，背部藍灰、翼有兩道白紋。","中高海拔 2,000–3,500m 針葉林（鐵杉、冷杉、松林），常倒掛松果啄食種子。","清細尖亮、快速反覆的「吱吱—匹—吱吱—匹」"],
-        [76,"黃胸藪眉","Steere's Liocichla","Liocichla steerii","forest",["台灣特有種","留鳥"],"17–19 cm","橄欖綠羽配鮮黃臉頰與淡黃胸腹（與 #71 藪鳥為同種異名，中海拔最親人畫眉）。","阿里山、溪頭、太平山等中海拔步道與灌叢，常成對在草地邊緣跳躍覓食。","響亮清脆的「急—救兒—！」與低沉咕嚕警戒聲"],
+        [76,"綠鳩","White-bellied Green Pigeon","Treron sieboldii","forest",["留鳥"],"30–33 cm","全身以黃綠色為主，雄鳥肩部帶栗紅色，腹部偏灰白，腳呈紅色。","中低海拔闊葉林與近郊結果的榕樹、樟樹樹冠，常成群取食果實。","悠揚像吹口哨、帶鼻音的「喔—嗚—喔—嗚」"],
         [77,"小彎嘴","Taiwan Scimitar Babbler","Pomatorhinus musicus","forest",["台灣特有種","留鳥"],"20–22 cm","細長下彎的黃黑嘴喙、寬大黑臉罩配醒目白眉紋、後頸栗紅、胸白帶黑縱紋。","低至中海拔郊山灌叢、竹林與森林底層，生性害羞只聞其聲不見其影。","低沉渾厚、在林間迴盪的「嘟—嘟嘟—」"],
         [78,"大彎嘴","Black-necklaced Scimitar Babbler","Erythrogenys erythrocnemis","forest",["台灣特有種","留鳥"],"24–26 cm","比小彎嘴大一號，長彎嘴暗灰、臉頰與脅羽磚紅，胸前滿佈大塊黑色水滴斑。","中低海拔 300–2,000m 濃密山林底層與竹林，常成對在落葉堆中翻找昆蟲。","響亮豪邁的「嘎—歸—、嘎—歸—」對唱"],
         [79,"頭烏線","Dusky Fulvetta","Schoeniparus brunneus","forest",["留鳥"],"13–14 cm","全身樸實茶褐色，頭頂兩側各有兩道清晰黑線一直延伸到後頸（名字由來）。","平地郊山至中海拔 2,000m 濃密灌叢底層，台灣森林裡最常聽見的背景音之一。","清亮高亢像在吹口哨問「是誰？是誰？是誰？」"],
@@ -2374,14 +2479,14 @@
         [84,"鉛色水鶇","Plumbeous Water Redstart","Phoenicurus fuliginosus","forest",["留鳥"],"12–13 cm","雄鳥全身深鉛藍灰配鮮豔栗紅尾羽；雌鳥灰褐、尾基雪白配黑尾端。","低至中海拔山區溪流、攔砂壩與溪畔岩石，領域性強愛張開尾羽上下擺動。","尖細清脆穿透溪水聲的「吱—吱—」"],
         [85,"火冠戴菊鳥","Flamecrest","Regulus goodfellowi","forest",["台灣特有種","留鳥"],"9 cm","台灣最小鳥類之一！黃綠羽、黑眼眶配白臉，頭頂中央燃燒著鮮豔橘紅火冠。","中高海拔 2,000–3,700m 針葉林樹冠層，動作極快如閃電般在松針間跳躍。","極細極高、如銀針般的「滋—滋—滋—」"],
         [86,"星鴉","Spotted Nutcracker","Nucifraga caryocatactes","forest",["留鳥"],"32–35 cm","全身巧克力黑褐但佈滿密密麻麻雪白水滴斑點宛如星空，粗厚黑嘴擅敲松果。","高海拔 2,200–3,600m 針葉林（合歡山、塔塔加常見），有秋季儲藏松子的習性。","高海拔樹梢粗啞響亮的「嘎—嘎—嘎—」"],
-        [87,"酒紅朱雀","Taiwan Rosefinch","Carpodacus formosanus","forest",["台灣特有種","留鳥"],"14–16 cm","雄鳥全身如醇厚紅酒般深玫瑰紅、配亮眼銀粉眉紋；雌鳥則為溫潤棕色縱紋。","高海拔 2,000–3,600m 箭竹叢與針葉林（與 #94 台灣朱雀同種，合歡山極常見）。","清脆上揚像在問「找—你？找—你？」"],
+        [87,"酒紅朱雀","Taiwan Rosefinch","Carpodacus formosanus","forest",["台灣特有種","留鳥"],"14–16 cm","雄鳥全身如醇厚紅酒般深玫瑰紅、配亮眼銀粉眉紋；雌鳥則為溫潤棕色縱紋。","高海拔 2,000–3,600m 箭竹叢與針葉林。","清脆上揚像在問「找—你？找—你？」"],
         [88,"金翼白眉","White-whiskered Laughingthrush","Trochalopteron morrisonianum","forest",["台灣特有種","留鳥"],"26–28 cm","高山最不怕人明星鳥！褐色身體配醒目白色長眉與八字鬍，雙翼閃耀亮金黃色。","中高海拔 2,000–3,500m 箭竹林、高山停車場與山屋周邊，常成對在地面跳躍。","宏亮悅耳、充滿朝氣的「啾—啾—啾哩！」"],
         [89,"栗背林鴝","Collared Bush Robin","Tarsiger johnstoniae","forest",["台灣特有種","留鳥"],"12–13 cm","雄鳥頭黑配細長雪白眉紋、頸背與胸側圍著一圈鮮豔栗橘色披肩；雌鳥橄欖褐。","高海拔 2,000–3,500m 針葉林底層、箭竹叢與高山步道，清晨常站在矮枝高歌。","清細尖脆的三音節口哨「吱—匹—優」"],
         [90,"白尾鴝","White-tailed Robin","Myiomela leucura","forest",["留鳥"],"17–19 cm","雄鳥全身深邃靛藍黑、額頭閃亮寶藍，展開尾巴時兩側露出雪白長羽；雌鳥棕褐。","中低海拔 800–2,300m 陰暗潮濕的闊葉林底層與溪谷林道，常在林下開合尾羽。","宛轉優美、空靈清亮的「哆—咪—索—拉」"],
         [91,"白喉噪眉","White-throated Laughingthrush","Pterorhinus albogularis","forest",["留鳥"],"28–30 cm","體型碩大、背橄欖褐、腹橘棕，最醒目是整個喉部呈現一大片潔白雪亮羽毛。","中海拔 1,000–2,500m 森林樹冠與林緣，常十多隻成大群邊吵鬧邊集體移動。","像一群人在林間笑鬧的「哇哈哈—嘎嘎嘎」"],
         [92,"台灣鷦眉","Taiwan Cupwing","Pnoepyga formosana","forest",["台灣特有種","留鳥"],"9 cm","幾乎沒有尾巴的圓滾滾深褐小毛球，胸腹佈滿精緻鱗片花紋（鱗胸鷦鷯）。","中海拔 1,000–2,800m 潮濕陰暗的森林底層蕨類與倒木間，如小老鼠般鑽行。","高亢清脆、令人難忘的「電鈴聲」連串顫鳴"],
         [93,"烏頭翁","Styan's Bulbul","Pycnonotus taivanus","forest",["台灣特有種","留鳥"],"18–19 cm","與白頭翁極似，但整個頭頂全黑如戴黑帽，嘴角下方有一顆可愛橘紅小點。","台灣特有種，主要分布於花東縱谷、恆春半島與台東郊山樹林及公園。","清脆響亮、音色與白頭翁相近的「巧克力！」"],
-        [94,"台灣朱雀","Taiwan Rosefinch","Carpodacus formosanus","forest",["台灣特有種","留鳥"],"14–16 cm","台灣高山特化獨立種（亦稱 #87 酒紅朱雀），雄鳥酒紅羽配粉白眉紋極夢幻。","中橫、合歡山、玉山塔塔加等高海拔 2,200–3,600m 箭竹與松林草坡常見。","清脆圓潤、帶點疑問語氣的「啾—咪？」"],
+        [94,"紅胸啄花鳥","Fire-breasted Flowerpecker","Dicaeum ignipectus","forest",["留鳥"],"8–9 cm","體型極小，雄鳥背部藍黑帶金屬光澤、胸前有一小塊橘紅斑，腹部淡黃；雌鳥橄欖綠。","中低海拔闊葉林樹冠，愛吃桑寄生果實，常停在寄生植物枝頭。","高細尖銳、短促的「滴—滴—」金屬聲"],
         [95,"大冠鷲","Crested Serpent Eagle","Spilornis cheela","forest",["留鳥"],"55–74 cm","台灣山區最常見大型猛禽，腦後具黑白相間羽冠，飛翔時翼後緣有一道寬白帶。","全台低至中海拔山區森林與丘陵上空，常乘著熱氣流悠閒盤旋，專吃蛇類。","高空盤旋時響亮悠長、穿透山谷的「忽—溜—！」"],
         [96,"鳳頭蒼鷹","Crested Goshawk","Accipiter trivirgatus","forest",["留鳥"],"40–48 cm","胸白帶粗褐縱紋、腹橫紋、頭後有小羽冠，飛行時尾下白色蓬鬆像穿白內褲。","從低海拔山林一路擴展到都會大型公園高樹，常隱蔽在樹冠伏擊松鼠與小鳥。","繁殖季空中抖翅宣示領域的「嘰—嘰—嘰」"],
         [97,"灰面鵟鷹","Grey-faced Buzzard","Butastur indicus","forest",["過境鳥"],"47–51 cm","臉頰灰褐、白喉中央有一條清晰黑縱線，每年國慶前後萬隻過境墾丁形成鷹河。","每年 3–4 月北返（八卦山）與 10 月南遷（墾丁滿州）大量過境台灣山區上空。","遷徙盤旋時清脆響亮的「匹—克威、匹—克威」"],
@@ -2550,6 +2655,8 @@
         if (commonsData && commonsData.query && commonsData.query.pages) {
           const pages = Object.values(commonsData.query.pages);
           for (let i = 0; i < pages.length; i++) {
+            const fname = (pages[i].title || '').toLowerCase();
+            if (!/\.(jpe?g|png)$/.test(fname) || /map|range|distribution|locator|status|\.svg/.test(fname)) continue;
             const info = pages[i].imageinfo && pages[i].imageinfo[0];
             if (!info) continue;
             const tUrl = info.thumburl || info.url;
@@ -2713,7 +2820,8 @@
           correctCount: 0,
           totalAnswered: 0,
           streak: 0,
-          bestStreak: 0
+          bestStreak: 0,
+          demoIds: []
         }
       };
 
@@ -2723,6 +2831,12 @@
 
       function getSeenBirds() {
         return BIRDS.filter(function (b) { return !!getLog(b.id).seen; });
+      }
+
+      function getQuizSeenBirds() {
+        const real = getSeenBirds();
+        if (real.length) return real;
+        return appState.quiz.demoIds.map(function (id) { return BIRD_BY_ID[id]; });
       }
 
       function loadSavedData() {
@@ -2800,7 +2914,7 @@
       function toggleCardYouTube(e, birdId) {
         if (e) e.stopPropagation();
         const bird = BIRD_BY_ID[birdId];
-        if (!bird || !bird.verifiedYT) return;
+        if (!bird) return;
 
         if (appState.expandedYtCardId === birdId) {
           collapseAllCardYouTube();
@@ -2816,12 +2930,14 @@
           slot.classList.remove('hidden');
           slot.innerHTML =
             '<div class="yt-inline-wrap">' +
-              '<div class="yt-frame-box">' +
-                '<iframe class="yt-embed-frame" src="' + buildYouTubeEmbedUrl(bird.verifiedYT.primary, false) + '" ' +
-                'title="' + escapeHtml(bird.name) + ' 真實野外叫聲" loading="lazy" ' +
-                'referrerpolicy="strict-origin-when-cross-origin" ' +
-                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
-              '</div>' +
+              (bird.verifiedYT
+                ? '<div class="yt-frame-box">' +
+                    '<iframe class="yt-embed-frame" src="' + buildYouTubeEmbedUrl(bird.verifiedYT.primary, false) + '" ' +
+                    'title="' + escapeHtml(bird.name) + ' 真實野外叫聲" loading="lazy" ' +
+                    'referrerpolicy="strict-origin-when-cross-origin" ' +
+                    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
+                  '</div>'
+                : renderYtPlaceholder(bird)) +
               '<div class="yt-inline-bar">' +
                 '<span>🎬 ' + escapeHtml(bird.name) + ' 台灣野外實錄</span>' +
                 '<button type="button" onclick="BirdApp.toggleCardYouTube(event, ' + bird.id + ')" style="font-weight:800; color:var(--forest-700);">收合影片 ▲</button>' +
@@ -2867,10 +2983,7 @@
 
         grid.innerHTML = list.map(function (bird) {
           const log = getLog(bird.id);
-          const audioButtons = bird.verifiedYT
-            ? '<button id="btn-card-yt-' + bird.id + '" type="button" class="btn-solid flex-1" onclick="BirdApp.toggleCardYouTube(event, ' + bird.id + ')"><span>🎬</span><span>聽真實叫聲</span></button>'
-            : '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-solid flex-1"><span>🎬</span><span>YouTube 真實鳥音</span></a>' +
-              '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-outline"><span>🎵</span><span>Xeno-canto</span></a>';
+          const audioButtons = '<button id="btn-card-yt-' + bird.id + '" type="button" class="btn-solid flex-1" onclick="BirdApp.toggleCardYouTube(event, ' + bird.id + ')"><span>🎬</span><span>聽真實叫聲</span></button>';
 
           return '<article class="bird-card" onclick="BirdApp.openDetailModal(' + bird.id + ')">' +
             '<div class="card-media" data-lazy-bird="' + bird.id + '">' +
@@ -2890,7 +3003,7 @@
                 '<div class="audio-box" onclick="event.stopPropagation()">' +
                   '<div class="audio-btn-row">' + audioButtons + '</div>' +
                   '<p class="call-text">🎵 口訣：' + escapeHtml(bird.callText) + '</p>' +
-                  (bird.verifiedYT ? '<div id="card-yt-slot-' + bird.id + '" class="hidden"></div>' : '') +
+                  '<div id="card-yt-slot-' + bird.id + '" class="hidden"></div>' +
                 '</div>' +
                 '<div class="card-desc">' +
                   '<p><strong>外觀：</strong>' + escapeHtml(bird.features) + '</p>' +
@@ -2974,37 +3087,26 @@
         const log = getLog(bird.id);
         const ytId = bird.verifiedYT ? (detailUseBackupYt ? bird.verifiedYT.backup : bird.verifiedYT.primary) : null;
 
-        let audioSectionHtml = '';
-        if (bird.verifiedYT) {
-          audioSectionHtml =
-            '<div class="audio-box" style="padding:14px; gap:10px;">' +
-              '<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px;">' +
-                '<strong style="font-size:0.9rem;">🎬 真實野外錄音（YouTube）</strong>' +
-                '<span id="detail-yt-label" style="font-size:0.74rem; color:var(--text-muted); font-weight:700;">' + (detailUseBackupYt ? '備用台灣野外錄音' : '主要台灣野外錄音') + '</span>' +
-              '</div>' +
-              '<div class="yt-frame-box">' +
-                '<iframe id="detail-yt-iframe" class="yt-embed-frame" src="' + buildYouTubeEmbedUrl(ytId, false) + '" ' +
-                'title="' + escapeHtml(bird.name) + ' 野外實錄" referrerpolicy="strict-origin-when-cross-origin" ' +
-                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
-              '</div>' +
-              '<div class="audio-btn-row">' +
-                '<button id="btn-detail-yt-switch" type="button" class="btn-solid" onclick="BirdApp.toggleDetailBackupYt()"><span>🔄</span><span>' + (detailUseBackupYt ? '切回主要錄音' : '切換備用錄音') + '</span></button>' +
-                '<a id="detail-yt-external" href="https://www.youtube.com/watch?v=' + encodeURIComponent(ytId) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>↗</span><span>在 YouTube 開啟</span></a>' +
-                '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-outline"><span>🎵</span><span>Xeno-canto 鳥音庫</span></a>' +
-              '</div>' +
-              '<p class="call-text">💡 叫聲記憶口訣：' + escapeHtml(bird.callText) + '</p>' +
-            '</div>';
-        } else {
-          audioSectionHtml =
-            '<div class="audio-box" style="padding:14px; gap:10px;">' +
-              '<strong style="font-size:0.9rem;">🎬 真實野外鳥音收聽</strong>' +
-              '<div class="audio-btn-row">' +
-                '<a href="' + buildYouTubeSearchUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>🎬</span><span>YouTube 真實鳥音</span></a>' +
-                '<a href="' + buildXenoCantoUrl(bird) + '" target="_blank" rel="noopener noreferrer" class="btn-solid"><span>🎵</span><span>Xeno-canto 鳥音庫</span></a>' +
-              '</div>' +
-              '<p class="call-text">💡 叫聲記憶口訣：' + escapeHtml(bird.callText) + '</p>' +
-            '</div>';
-        }
+        const hasYt = !!bird.verifiedYT;
+        const audioSectionHtml =
+          '<div class="audio-box" style="padding:14px; gap:10px;">' +
+            '<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px;">' +
+              '<strong style="font-size:0.9rem;">🎬 真實野外錄音（YouTube）</strong>' +
+              (hasYt ? '<span id="detail-yt-label" style="font-size:0.74rem; color:var(--text-muted); font-weight:700;">' + (detailUseBackupYt ? '備用台灣野外錄音' : '主要台灣野外錄音') + '</span>' : '') +
+            '</div>' +
+            (hasYt
+              ? '<div class="yt-frame-box">' +
+                  '<iframe id="detail-yt-iframe" class="yt-embed-frame" src="' + buildYouTubeEmbedUrl(ytId, false) + '" ' +
+                  'title="' + escapeHtml(bird.name) + ' 野外實錄" referrerpolicy="strict-origin-when-cross-origin" ' +
+                  'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
+                '</div>' +
+                '<div class="audio-btn-row">' +
+                  '<button id="btn-detail-yt-switch" type="button" class="btn-solid" onclick="BirdApp.toggleDetailBackupYt()"><span>🔄</span><span>' + (detailUseBackupYt ? '切回主要錄音' : '切換備用錄音') + '</span></button>' +
+                  '<a id="detail-yt-external" href="https://www.youtube.com/watch?v=' + encodeURIComponent(ytId) + '" target="_blank" rel="noopener noreferrer" class="btn-yt-red"><span>↗</span><span>在 YouTube 開啟</span></a>' +
+                '</div>'
+              : renderYtPlaceholder(bird)) +
+            '<p class="call-text">💡 叫聲記憶口訣：' + escapeHtml(bird.callText) + '</p>' +
+          '</div>';
 
         content.innerHTML =
           '<div class="detail-hero-photo" onclick="BirdApp.openLightbox(' + bird.id + ')">' +
@@ -3138,7 +3240,7 @@
 
         const emptyBox = byId('quiz-empty-seen');
         const activeArea = byId('quiz-active-area');
-        const seenBirds = getSeenBirds();
+        const seenBirds = getQuizSeenBirds();
 
         if (appState.quiz.pool === 'seen' && seenBirds.length === 0) {
           if (emptyBox) emptyBox.classList.remove('hidden');
@@ -3153,7 +3255,7 @@
         // 檢查現有題目是否仍符合目前題庫
         const cur = appState.quiz.currentBird;
         let needNew = !!forceNewRound || !cur;
-        if (!needNew && appState.quiz.pool === 'seen' && !getLog(cur.id).seen) {
+        if (!needNew && appState.quiz.pool === 'seen' && !seenBirds.some(function (b) { return b.id === cur.id; })) {
           needNew = true;
         }
         if (!needNew && appState.quiz.pool === 'all' && appState.quiz.scope !== 'all' && cur.habitat !== appState.quiz.scope) {
@@ -3170,7 +3272,7 @@
       }
 
       function startQuizRound() {
-        const seenBirds = getSeenBirds();
+        const seenBirds = getQuizSeenBirds();
         const noticeEl = byId('quiz-few-seen-notice');
         let answerPool = [];
         let distractorCandidates = [];
@@ -3323,9 +3425,8 @@
         const container = byId('quiz-options');
         if (!container) return;
         container.innerHTML = appState.quiz.options.map(function (bird) {
-          const isSeen = !!getLog(bird.id).seen;
           return '<button type="button" id="quiz-opt-' + bird.id + '" class="quiz-opt-btn" onclick="BirdApp.submitQuizAnswer(' + bird.id + ')">' +
-            '<div class="opt-avatar">' + (isSeen ? '👀' : '🐦') + '</div>' +
+            '<div class="opt-avatar">🐦</div>' +
             '<div>' +
               '<div style="font-weight:900; font-size:0.95rem;">' + escapeHtml(bird.name) + '</div>' +
               '<div style="font-size:0.74rem; color:var(--text-muted);">' + HABITAT_META[bird.habitat].short + ' · ' + escapeHtml(bird.size) + '</div>' +
@@ -3643,7 +3744,7 @@
           const cur = getLog(birdId);
           cur[field] = !cur[field];
           if (cur[field] && !cur.date) {
-            cur.date = new Date().toISOString().split('T')[0];
+            cur.date = todayLocal();
           }
           appState.logs[birdId] = cur;
           saveData(false);
@@ -3672,7 +3773,7 @@
           cur.place = pEl ? pEl.value.trim() : '';
           cur.note = nEl ? nEl.value.trim() : '';
           if (cur.seen && !cur.date) {
-            cur.date = new Date().toISOString().split('T')[0];
+            cur.date = todayLocal();
           }
           appState.logs[birdId] = cur;
           appState.expandedLogId = null;
@@ -3809,15 +3910,8 @@
 
         // 空狀態三個快速引導按鈕
         safeBind('btn-seed-urban', 'click', function () {
-          const today = new Date().toISOString().split('T')[0];
-          QUICK_SEED_URBAN_IDS.forEach(function (id) {
-            const cur = getLog(id);
-            cur.seen = true;
-            if (!cur.date) cur.date = today;
-            appState.logs[id] = cur;
-          });
-          saveData(true);
-          showToast('✨ 已勾選 6 種市區常見鳥，開始挑戰吧！');
+          appState.quiz.demoIds = QUICK_SEED_URBAN_IDS.slice();
+          showToast('✨ 試玩題庫已就緒（不會寫入觀察紀錄）');
           renderQuizView(true);
         });
 
