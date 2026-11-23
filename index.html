@@ -1627,6 +1627,7 @@
       opacity: 1;
     }
   </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -1906,6 +1907,8 @@
 
         <!-- 四大棲地個別進度條 -->
         <div id="habitat-progress-grid" class="habitat-progress-grid"></div>
+
+        <div id="drive-sync-box" style="margin-top:14px; padding:12px; border:1px solid var(--border-soft); border-radius:14px; background:var(--bg-sub); display:flex; flex-direction:column; gap:8px;"></div>
 
         <!-- 清除所有紀錄（行內雙重確認，絕不使用 window.confirm） -->
         <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border-soft); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;">
@@ -2833,6 +2836,228 @@
         return BIRDS.filter(function (b) { return !!getLog(b.id).seen; });
       }
 
+      /* =========================================================
+         Google 雲端硬碟同步（Google Identity Services + Drive appDataFolder）
+         ========================================================= */
+      // ★ 請填入你在 Google Cloud Console 建立的「網頁應用程式」OAuth 用戶端 ID；留空則不啟用雲端同步
+      const GOOGLE_CLIENT_ID = '';
+      const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+      const DRIVE_FILE_NAME = 'tw_bird100_log.json';
+      const DRIVE_FLAG_KEY = 'tw_bird100_drive_linked';
+      const drive = {
+        token: null, expiresAt: 0, fileId: null, tokenClient: null,
+        syncing: false, timer: null, suppress: false,
+        status: '', lastSync: '', pending: null, pendingErr: null
+      };
+
+      function driveConfigured() { return !!GOOGLE_CLIENT_ID; }
+      function driveLinked() {
+        try { return localStorage.getItem(DRIVE_FLAG_KEY) === '1'; } catch (e) { return false; }
+      }
+      function driveTokenValid() { return !!drive.token && Date.now() < drive.expiresAt; }
+
+      function renderDriveBox() {
+        const box = byId('drive-sync-box');
+        if (!box) return;
+        if (!driveConfigured()) {
+          box.innerHTML = '<strong style="font-size:0.84rem;">☁️ Google 雲端硬碟同步</strong>' +
+            '<span style="font-size:0.76rem; color:var(--text-muted);">尚未啟用，目前紀錄只存在這台裝置的瀏覽器中。</span>';
+          return;
+        }
+        const linked = driveLinked();
+        const statusText = drive.status || (linked ? '已連結，按「立即同步」取得最新紀錄' : '尚未連結');
+        const lastText = drive.lastSync ? '（上次同步 ' + drive.lastSync + '）' : '';
+        box.innerHTML =
+          '<strong style="font-size:0.84rem;">☁️ Google 雲端硬碟同步</strong>' +
+          '<span style="font-size:0.74rem; color:var(--text-muted);">紀錄會存到你自己雲端硬碟的「應用程式專用資料夾」，本網站只能存取它自己建立的檔案，看不到你的其他檔案。</span>' +
+          '<span style="font-size:0.78rem; font-weight:700;">' + escapeHtml(statusText + lastText) + '</span>' +
+          '<div style="display:flex; flex-wrap:wrap; gap:8px;">' +
+            '<button type="button" class="btn-solid" ' + (drive.syncing ? 'disabled' : '') + ' onclick="BirdApp.driveSync()">' + (linked ? '🔄 立即同步' : '🔗 連結 Google 帳號並同步') + '</button>' +
+            (linked ? '<button type="button" class="btn-outline" onclick="BirdApp.driveDisconnect()">中斷連結</button>' : '') +
+          '</div>';
+      }
+
+      function setDriveStatus(msg) {
+        drive.status = msg;
+        renderDriveBox();
+      }
+
+      function driveRequestToken() {
+        return new Promise(function (resolve, reject) {
+          if (driveTokenValid()) { resolve(drive.token); return; }
+          if (!window.google || !google.accounts || !google.accounts.oauth2) {
+            reject(new Error('Google 登入元件尚未載入，請確認網路後重試'));
+            return;
+          }
+          if (!drive.tokenClient) {
+            drive.tokenClient = google.accounts.oauth2.initTokenClient({
+              client_id: GOOGLE_CLIENT_ID,
+              scope: DRIVE_SCOPE,
+              callback: function (resp) { if (drive.pending) drive.pending(resp); },
+              error_callback: function (err) { if (drive.pendingErr) drive.pendingErr(err); }
+            });
+          }
+          drive.pending = function (resp) {
+            if (resp.error) { reject(new Error(resp.error_description || resp.error)); return; }
+            if (!google.accounts.oauth2.hasGrantedAllScopes(resp, DRIVE_SCOPE)) {
+              reject(new Error('需要勾選雲端硬碟的應用程式資料權限才能同步'));
+              return;
+            }
+            drive.token = resp.access_token;
+            drive.expiresAt = Date.now() + ((Number(resp.expires_in) || 3600) - 60) * 1000;
+            resolve(drive.token);
+          };
+          drive.pendingErr = function (err) {
+            reject(new Error(err && err.type === 'popup_closed' ? '已取消登入' : '登入視窗無法開啟或登入失敗'));
+          };
+          drive.tokenClient.requestAccessToken({ prompt: driveLinked() ? '' : 'consent' });
+        });
+      }
+
+      async function driveFetch(url, opts) {
+        const o = opts || {};
+        o.headers = Object.assign({}, o.headers || {}, { Authorization: 'Bearer ' + drive.token });
+        const res = await fetch(url, o);
+        if (!res.ok) {
+          if (res.status === 401) { drive.token = null; drive.expiresAt = 0; }
+          if (res.status === 404) { drive.fileId = null; }
+          throw new Error('雲端硬碟回應錯誤（' + res.status + '）');
+        }
+        return res;
+      }
+
+      async function driveFindFile() {
+        if (drive.fileId) return drive.fileId;
+        const q = encodeURIComponent("name='" + DRIVE_FILE_NAME + "' and trashed=false");
+        const res = await driveFetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=' + q + '&fields=files(id)&pageSize=1');
+        const data = await res.json();
+        drive.fileId = (data.files && data.files[0]) ? data.files[0].id : null;
+        return drive.fileId;
+      }
+
+      async function driveDownload(id) {
+        const res = await driveFetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(id) + '?alt=media');
+        return await res.json();
+      }
+
+      async function driveUpload(payload) {
+        const body = JSON.stringify(payload);
+        if (drive.fileId) {
+          await driveFetch('https://www.googleapis.com/upload/drive/v3/files/' + encodeURIComponent(drive.fileId) + '?uploadType=media', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: body
+          });
+        } else {
+          const boundary = 'twbird' + Date.now();
+          const meta = JSON.stringify({ name: DRIVE_FILE_NAME, parents: ['appDataFolder'], mimeType: 'application/json' });
+          const multipart =
+            '--' + boundary + '\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n' + meta + '\r\n' +
+            '--' + boundary + '\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n' + body + '\r\n' +
+            '--' + boundary + '--';
+          const res = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+            method: 'POST',
+            headers: { 'Content-Type': 'multipart/related; boundary=' + boundary },
+            body: multipart
+          });
+          const d = await res.json();
+          drive.fileId = d.id;
+        }
+      }
+
+      function mergeLogs(local, remote) {
+        const out = {};
+        const r = remote || {};
+        const ids = {};
+        Object.keys(local).forEach(function (k) { ids[k] = true; });
+        Object.keys(r).forEach(function (k) { ids[k] = true; });
+        Object.keys(ids).forEach(function (id) {
+          const a = local[id];
+          const b = r[id];
+          if (!a) out[id] = b;
+          else if (!b) out[id] = a;
+          else out[id] = ((b.u || 0) > (a.u || 0)) ? b : a;
+        });
+        return out;
+      }
+
+      function nowClock() {
+        const d = new Date();
+        const p = function (n) { return String(n).padStart(2, '0'); };
+        return p(d.getHours()) + ':' + p(d.getMinutes());
+      }
+
+      async function driveSync(interactive) {
+        if (!driveConfigured() || drive.syncing) return;
+        if (!interactive && !driveTokenValid()) {
+          setDriveStatus('登入已過期，請按「立即同步」重新連線');
+          return;
+        }
+        drive.syncing = true;
+        setDriveStatus('同步中…');
+        try {
+          await driveRequestToken();
+          const id = await driveFindFile();
+          let remote = null;
+          if (id) remote = await driveDownload(id);
+
+          const remoteLogs = (remote && remote.logs && typeof remote.logs === 'object') ? remote.logs : {};
+          const merged = mergeLogs(appState.logs, remoteLogs);
+          const remoteBest = (remote && typeof remote.bestStreak === 'number') ? remote.bestStreak : 0;
+
+          appState.logs = merged;
+          appState.quiz.bestStreak = Math.max(appState.quiz.bestStreak, remoteBest);
+          drive.suppress = true;
+          saveData(true);
+          drive.suppress = false;
+
+          await driveUpload({
+            version: 1,
+            savedAt: new Date().toISOString(),
+            logs: appState.logs,
+            bestStreak: appState.quiz.bestStreak
+          });
+
+          try { localStorage.setItem(DRIVE_FLAG_KEY, '1'); } catch (e) {}
+          drive.lastSync = nowClock();
+          drive.status = '✅ 已同步到 Google 雲端硬碟';
+
+          if (appState.activeTab === 'log') renderLogList();
+          else if (appState.activeTab === 'quiz') renderQuizView(false);
+          else renderBirdGrid();
+          updateQuizScoreUI();
+          if (interactive) showToast('☁️ 已與 Google 雲端硬碟同步');
+        } catch (err) {
+          drive.suppress = false;
+          drive.status = '⚠️ 同步失敗：' + (err && err.message ? err.message : '未知錯誤');
+        } finally {
+          drive.syncing = false;
+          renderDriveBox();
+        }
+      }
+
+      function scheduleDriveSync() {
+        if (!driveConfigured() || !driveLinked() || !driveTokenValid()) return;
+        if (drive.timer) clearTimeout(drive.timer);
+        drive.timer = setTimeout(function () { driveSync(false); }, 2500);
+      }
+
+      function driveDisconnect() {
+        try {
+          if (drive.token && window.google && google.accounts && google.accounts.oauth2) {
+            google.accounts.oauth2.revoke(drive.token, function () {});
+          }
+          localStorage.removeItem(DRIVE_FLAG_KEY);
+        } catch (e) {}
+        drive.token = null;
+        drive.expiresAt = 0;
+        drive.fileId = null;
+        drive.tokenClient = null;
+        drive.lastSync = '';
+        drive.status = '已中斷連結（雲端上的備份檔案仍保留，本機紀錄不受影響）';
+        renderDriveBox();
+      }
+
       function getQuizSeenBirds() {
         const real = getSeenBirds();
         if (real.length) return real;
@@ -2844,7 +3069,13 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return;
           const parsed = JSON.parse(raw);
-          if (parsed.logs && typeof parsed.logs === 'object') appState.logs = parsed.logs;
+          if (parsed.logs && typeof parsed.logs === 'object') {
+            appState.logs = parsed.logs;
+            const legacyTs = Date.now();
+            Object.keys(appState.logs).forEach(function (k) {
+              if (appState.logs[k] && !appState.logs[k].u) appState.logs[k].u = legacyTs;
+            });
+          }
           if (typeof parsed.darkMode === 'boolean') appState.darkMode = parsed.darkMode;
           if (typeof parsed.bestStreak === 'number') appState.quiz.bestStreak = parsed.bestStreak;
         } catch (e) {}
@@ -2859,6 +3090,7 @@
           }));
           if (!silent) showToast('已自動儲存觀察紀錄 📒');
         } catch (e) {}
+        if (!drive.suppress) scheduleDriveSync();
         updateLogSummaryUI();
       }
 
@@ -3721,6 +3953,8 @@
          11. 對外統一介面 window.BirdApp
          ========================================================= */
       window.BirdApp = {
+        driveSync: function () { driveSync(true); },
+        driveDisconnect: driveDisconnect,
         toggleCardYouTube: toggleCardYouTube,
         toggleDetailBackupYt: toggleDetailBackupYt,
         openDetailModal: openDetailModal,
@@ -3743,6 +3977,7 @@
           if (e) e.stopPropagation();
           const cur = getLog(birdId);
           cur[field] = !cur[field];
+          cur.u = Date.now();
           if (cur[field] && !cur.date) {
             cur.date = todayLocal();
           }
@@ -3775,6 +4010,7 @@
           if (cur.seen && !cur.date) {
             cur.date = todayLocal();
           }
+          cur.u = Date.now();
           appState.logs[birdId] = cur;
           appState.expandedLogId = null;
           appState.pendingClearLogId = null;
@@ -3793,7 +4029,7 @@
         },
 
         confirmClearLog: function (birdId) {
-          delete appState.logs[birdId];
+          appState.logs[birdId] = { seen: false, heard: false, date: '', place: '', note: '', u: Date.now() };
           appState.expandedLogId = null;
           appState.pendingClearLogId = null;
           saveData(true);
@@ -3813,7 +4049,12 @@
         },
 
         confirmClearAllLogs: function () {
-          appState.logs = {};
+          const clearTs = Date.now();
+          const tomb = {};
+          Object.keys(appState.logs).forEach(function (k) {
+            tomb[k] = { seen: false, heard: false, date: '', place: '', note: '', u: clearTs };
+          });
+          appState.logs = tomb;
           appState.expandedLogId = null;
           appState.pendingClearLogId = null;
           appState.pendingClearAllLogs = false;
@@ -3832,6 +4073,7 @@
         loadSavedData();
         applyDarkMode();
         updateLogSummaryUI();
+        renderDriveBox();
         renderBirdGrid();
 
         // 三大分頁切換
